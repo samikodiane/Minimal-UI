@@ -1,10 +1,8 @@
 export { loadMinimalUIFonts } from './loadFonts';
 export {
   DEFAULT_THEME_FONT,
-  FONTSOURCE_IDS,
   getBoldFontFamily,
   getFontFamily,
-  getFontsourceUrl,
   getSemiBoldFontFamily,
   parseThemeFont,
   THEME_FONTS,

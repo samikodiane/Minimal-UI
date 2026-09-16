@@ -74,7 +74,10 @@ function ThemeDemo() {
 
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor: colors.primary }]}>
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        // Let elevation / iOS shadows paint into the padded area.
+        clipToPadding={false}>
         <Text style={[styles.title, { color: colors.secondary }]}>Theme</Text>
         <Text style={[styles.subtitle, { color: colors.accent }]}>
           Tweak colors, borders, and shadows in real time.
@@ -449,8 +452,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    padding: 20,
-    paddingBottom: 40,
+    padding: 24,
+    paddingBottom: 48,
   },
   title: {
     fontSize: 28,
@@ -484,9 +487,11 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   preview: {
-    marginBottom: 24,
+    marginBottom: 28,
     alignSelf: 'stretch',
     gap: 8,
+    // Give Android elevation room so ScrollView does not clip it.
+    overflow: 'visible',
   },
   fontRow: {
     flexDirection: 'row',

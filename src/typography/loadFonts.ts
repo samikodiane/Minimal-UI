@@ -1,55 +1,34 @@
-import { loadAsync, type FontSource } from 'expo-font';
+import { loadAsync } from 'expo-font';
 
+import { GOOGLE_FONT_ASSETS } from './googleFontAssets';
 import {
-  FONTSOURCE_IDS,
   getBoldFontFamily,
   getFontFamily,
-  getFontsourceUrl,
   getSemiBoldFontFamily,
   ThemeFont,
 } from './fontTypes';
 
-async function loadFontEntry(
-  family: string,
-  source: FontSource,
-  fallback?: FontSource
-): Promise<void> {
-  try {
-    await loadAsync({ [family]: source });
-  } catch {
-    if (fallback) {
-      try {
-        await loadAsync({ [family]: fallback });
-      } catch {
-        // Ignore missing weights for display-only fonts.
-      }
-    }
-  }
-}
-
 /**
- * Load all theme fonts. Call once at app startup (before rendering text).
- * Geist is bundled; the rest load from Fontsource CDN.
+ * Load all theme fonts from bundled assets (Geist + @expo-google-fonts).
+ * Call once at app startup before rendering text. Works fully offline.
  */
 export async function loadMinimalUIFonts(): Promise<void> {
   const geistRegular = require('../../assets/fonts/Geist-Regular.ttf');
   const geistSemiBold = require('../../assets/fonts/Geist-SemiBold.ttf');
   const geistBold = require('../../assets/fonts/Geist-Bold.ttf');
 
-  await loadFontEntry(getFontFamily(ThemeFont.Geist), geistRegular);
-  await loadFontEntry(getSemiBoldFontFamily(ThemeFont.Geist), geistSemiBold, geistRegular);
-  await loadFontEntry(getBoldFontFamily(ThemeFont.Geist), geistBold, geistRegular);
+  const fonts: Record<string, number> = {
+    [getFontFamily(ThemeFont.Geist)]: geistRegular,
+    [getSemiBoldFontFamily(ThemeFont.Geist)]: geistSemiBold,
+    [getBoldFontFamily(ThemeFont.Geist)]: geistBold,
+  };
 
-  for (const [fontKey, fontId] of Object.entries(FONTSOURCE_IDS)) {
+  for (const [fontKey, faces] of Object.entries(GOOGLE_FONT_ASSETS)) {
     const font = fontKey as ThemeFont;
-    const regular = { uri: getFontsourceUrl(fontId, 400) };
-
-    await loadFontEntry(getFontFamily(font), regular);
-    await loadFontEntry(getSemiBoldFontFamily(font), {
-      uri: getFontsourceUrl(fontId, 600),
-    }, regular);
-    await loadFontEntry(getBoldFontFamily(font), {
-      uri: getFontsourceUrl(fontId, 700),
-    }, regular);
+    fonts[getFontFamily(font)] = faces.regular;
+    fonts[getSemiBoldFontFamily(font)] = faces.semiBold;
+    fonts[getBoldFontFamily(font)] = faces.bold;
   }
+
+  await loadAsync(fonts);
 }

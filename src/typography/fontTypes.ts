@@ -48,39 +48,6 @@ export const DEFAULT_THEME_FONT = ThemeFont.Geist;
 /** All selectable theme fonts (for pickers / enums). */
 export const THEME_FONTS = Object.values(ThemeFont);
 
-/** Fontsource CDN ids for Google fonts (Geist is local). */
-export const FONTSOURCE_IDS: Partial<Record<ThemeFont, string>> = {
-  [ThemeFont.Poppins]: 'poppins',
-  [ThemeFont.PixelifySans]: 'pixelify-sans',
-  [ThemeFont.Cinzel]: 'cinzel',
-  [ThemeFont.Iceland]: 'iceland',
-  [ThemeFont.Abel]: 'abel',
-  [ThemeFont.Sail]: 'sail',
-  [ThemeFont.PoiretOne]: 'poiret-one',
-  [ThemeFont.RobotoMono]: 'roboto-mono',
-  [ThemeFont.Lora]: 'lora',
-  [ThemeFont.Ubuntu]: 'ubuntu',
-  [ThemeFont.Outfit]: 'outfit',
-  [ThemeFont.BebasNeue]: 'bebas-neue',
-  [ThemeFont.SourceCodePro]: 'source-code-pro',
-  [ThemeFont.JosefinSans]: 'josefin-sans',
-  [ThemeFont.InstrumentSerif]: 'instrument-serif',
-  [ThemeFont.Caveat]: 'caveat',
-  [ThemeFont.Bungee]: 'bungee',
-  [ThemeFont.Pacifico]: 'pacifico',
-  [ThemeFont.Kalam]: 'kalam',
-  [ThemeFont.AmaticSc]: 'amatic-sc',
-  [ThemeFont.Acme]: 'acme',
-  [ThemeFont.ShareTechMono]: 'share-tech-mono',
-  [ThemeFont.Bangers]: 'bangers',
-  [ThemeFont.LexendExa]: 'lexend-exa',
-  [ThemeFont.Courgette]: 'courgette',
-  [ThemeFont.Changa]: 'changa',
-  [ThemeFont.Gruppo]: 'gruppo',
-  [ThemeFont.Goldman]: 'goldman',
-  [ThemeFont.Audiowide]: 'audiowide',
-};
-
 export function getFontFamily(font: ThemeFont): string {
   return font;
 }
@@ -91,13 +58,6 @@ export function getBoldFontFamily(font: ThemeFont): string {
 
 export function getSemiBoldFontFamily(font: ThemeFont): string {
   return `${font}-SemiBold`;
-}
-
-export function getFontsourceUrl(
-  fontId: string,
-  weight: 400 | 600 | 700 = 400
-): string {
-  return `https://cdn.jsdelivr.net/fontsource/fonts/${fontId}@latest/latin-${weight}-normal.ttf`;
 }
 
 export function parseThemeFont(value: string | undefined): ThemeFont | null {
