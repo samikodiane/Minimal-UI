@@ -15,7 +15,7 @@ import {
   MIN_SHADOW_OFFSET,
   MIN_SHADOW_OPACITY,
   MIN_SHADOW_SPREAD,
-  ThemeFont,
+  THEME_FONTS,
   useColors,
 } from 'my-module';
 import Slider from '@react-native-community/slider';
@@ -107,7 +107,7 @@ function ThemeDemo() {
 
         <Text style={[styles.section, { color: colors.secondary }]}>Font</Text>
         <View style={styles.fontRow}>
-          {Object.values(ThemeFont).map((name) => (
+          {THEME_FONTS.map((name) => (
             <FontChip
               key={name}
               label={name}

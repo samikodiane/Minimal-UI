@@ -26,6 +26,8 @@ import {
 import {
   DEFAULT_THEME_FONT,
   getFontFamily,
+  getBoldFontFamily,
+  getSemiBoldFontFamily,
   parseThemeFont,
   ThemeFont,
 } from '../typography/fontTypes';
@@ -260,6 +262,8 @@ export function ColorsProvider({
   const font: ThemeFontState = {
     name: activeFont,
     family: getFontFamily(activeFont),
+    boldFamily: getBoldFontFamily(activeFont),
+    semiBoldFamily: getSemiBoldFontFamily(activeFont),
   };
 
   return (

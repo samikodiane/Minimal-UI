@@ -47,6 +47,7 @@ export {
   loadMinimalUIFonts,
   PRIMARY_TEXT_SIZE,
   SECONDARY_TEXT_SIZE,
+  THEME_FONTS,
   ThemeFont,
 } from './typography';
 export type { MainTextVariant, ThemeFontState } from './typography';

@@ -5,9 +5,7 @@ import { useColors } from '../../colors/ColorsProvider';
 import { ACCENT_OPACITY, colorWithOpacity } from '../../colors/colorUtils';
 import {
   PRIMARY_TEXT_SIZE,
-  PRIMARY_TEXT_WEIGHT,
   SECONDARY_TEXT_SIZE,
-  SECONDARY_TEXT_WEIGHT,
   type MainTextVariant,
 } from '../../typography/textUtils';
 
@@ -36,8 +34,7 @@ export type MainTextProps = {
 
 /**
  * Themed text using the active theme font.
- * Primary: secondary color, bold (or primary when inverted).
- * Secondary: accent color, semi-bold (or primary @ 60% when inverted).
+ * Uses weight-specific font files so custom fonts update correctly on native.
  */
 export function MainText({
   children,
@@ -72,10 +69,10 @@ export function MainText({
       : colors.accent;
 
   const variantStyle: TextStyle = {
-    fontFamily: font.family,
+    fontFamily: isPrimary ? font.boldFamily : font.semiBoldFamily,
     fontSize,
     color,
-    fontWeight: isPrimary ? PRIMARY_TEXT_WEIGHT : SECONDARY_TEXT_WEIGHT,
+    fontWeight: 'normal',
     fontStyle: italic ? 'italic' : 'normal',
     textDecorationLine,
   };
