@@ -3,6 +3,7 @@ import {
   loadMinimalUIFonts,
   MainContainer,
   MainText,
+  MainTextField,
   MAX_BORDER_RADIUS,
   MAX_BORDER_WIDTH,
   MAX_SHADOW_BLUR,
@@ -105,6 +106,25 @@ function ThemeDemo() {
           <MainText variant="secondary" inverted>
             Inverted secondary
           </MainText>
+        </MainContainer>
+
+        <Text style={[styles.section, { color: colors.secondary }]}>
+          Text field
+        </Text>
+        <MainTextField
+          showLabel
+          labelText="Name"
+          hintText="Type here"
+          defaultText=""
+          style={styles.textField}
+        />
+        <MainContainer style={styles.textField} filled overrideBorder>
+          <MainTextField
+            showLabel
+            labelText="Email"
+            hintText="you@example.com"
+            inverted
+          />
         </MainContainer>
 
         <Text style={[styles.section, { color: colors.secondary }]}>
@@ -522,6 +542,10 @@ const styles = StyleSheet.create({
   },
   listPreview: {
     marginBottom: 28,
+    alignSelf: 'stretch',
+  },
+  textField: {
+    marginBottom: 16,
     alignSelf: 'stretch',
   },
   listItem: {

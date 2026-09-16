@@ -39,10 +39,16 @@ export type {
   ThemeShadows,
 } from './colors';
 
-export { MainContainer, MainText, ShadowSidedList } from './components';
+export {
+  MainContainer,
+  MainText,
+  MainTextField,
+  ShadowSidedList,
+} from './components';
 export type {
   MainContainerProps,
   MainTextProps,
+  MainTextFieldProps,
   ShadowSidedListProps,
 } from './components';
 
