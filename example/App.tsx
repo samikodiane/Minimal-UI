@@ -1,6 +1,7 @@
 import {
   ColorsProvider,
   loadMinimalUIFonts,
+  MainCheckItem,
   MainContainer,
   MainText,
   MainTextField,
@@ -189,6 +190,31 @@ function ThemeDemo() {
             onSubmit={(text) =>
               showToast(`Email submitted: ${text || '(empty)'}`)
             }
+          />
+        </MainContainer>
+
+        <Text style={[styles.section, { color: colors.secondary }]}>
+          Check item
+        </Text>
+        <MainCheckItem
+          text="Buy groceries"
+          style={styles.checkItem}
+          onToggleOn={() => showToast('Check item toggled on')}
+          onToggleOff={() => showToast('Check item toggled off')}
+        />
+        <MainCheckItem
+          text="Already done task"
+          checked
+          style={styles.checkItem}
+          onToggleOn={() => showToast('Pre-checked item toggled on')}
+          onToggleOff={() => showToast('Pre-checked item toggled off')}
+        />
+        <MainContainer style={styles.checkItem} filled overrideBorder>
+          <MainCheckItem
+            text="Inverted check item"
+            inverted
+            onToggleOn={() => showToast('Inverted check toggled on')}
+            onToggleOff={() => showToast('Inverted check toggled off')}
           />
         </MainContainer>
 
@@ -626,6 +652,10 @@ const styles = StyleSheet.create({
   },
   textField: {
     marginBottom: 16,
+    alignSelf: 'stretch',
+  },
+  checkItem: {
+    marginBottom: 12,
     alignSelf: 'stretch',
   },
   listItem: {

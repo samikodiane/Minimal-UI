@@ -1,3 +1,5 @@
+export { MainCheckItem } from './MainCheckItem';
+export type { MainCheckItemProps } from './MainCheckItem';
 export { MainContainer } from './MainContainer';
 export type { MainContainerProps } from './MainContainer';
 export { MainText } from './MainText';

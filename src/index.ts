@@ -40,12 +40,14 @@ export type {
 } from './colors';
 
 export {
+  MainCheckItem,
   MainContainer,
   MainText,
   MainTextField,
   ShadowSidedList,
 } from './components';
 export type {
+  MainCheckItemProps,
   MainContainerProps,
   MainTextProps,
   MainTextFieldProps,
