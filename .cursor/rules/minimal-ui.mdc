@@ -1,0 +1,14 @@
+---
+description: Minimal UI library conventions for agents
+alwaysApply: true
+---
+
+# Minimal UI
+
+Follow the repository guide in [AGENTS.md](AGENTS.md).
+
+- Package name: `@samikodiane/minimal-ui`
+- Edit library code under `src/`; demo in `example/`
+- Theme rules: one font; accent and shadow color are derived — never add public setters for them
+- Expo SDK 57 docs: https://docs.expo.dev/versions/v57.0.0/
+- License is PolyForm Noncommercial — do not relicense to MIT
