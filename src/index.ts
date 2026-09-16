@@ -42,6 +42,7 @@ export type {
 export {
   MainCheckItem,
   MainContainer,
+  MainSwitch,
   MainText,
   MainTextField,
   ShadowSidedList,
@@ -49,6 +50,7 @@ export {
 export type {
   MainCheckItemProps,
   MainContainerProps,
+  MainSwitchProps,
   MainTextProps,
   MainTextFieldProps,
   ShadowSidedListProps,

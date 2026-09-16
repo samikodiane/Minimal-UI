@@ -3,6 +3,7 @@ import {
   loadMinimalUIFonts,
   MainCheckItem,
   MainContainer,
+  MainSwitch,
   MainText,
   MainTextField,
   MAX_BORDER_RADIUS,
@@ -216,6 +217,37 @@ function ThemeDemo() {
             onToggleOn={() => showToast('Inverted check toggled on')}
             onToggleOff={() => showToast('Inverted check toggled off')}
           />
+        </MainContainer>
+
+        <Text style={[styles.section, { color: colors.secondary }]}>
+          Switch
+        </Text>
+        <View style={styles.switchRow}>
+          <MainText variant="secondary">Notifications</MainText>
+          <MainSwitch
+            onToggleOn={() => showToast('Switch toggled on')}
+            onToggleOff={() => showToast('Switch toggled off')}
+          />
+        </View>
+        <View style={styles.switchRow}>
+          <MainText variant="secondary">Pre-enabled</MainText>
+          <MainSwitch
+            active
+            onToggleOn={() => showToast('Pre-enabled switch on')}
+            onToggleOff={() => showToast('Pre-enabled switch off')}
+          />
+        </View>
+        <MainContainer style={styles.checkItem} filled overrideBorder>
+          <View style={styles.switchRowInverted}>
+            <MainText variant="secondary" inverted>
+              Inverted switch
+            </MainText>
+            <MainSwitch
+              inverted
+              onToggleOn={() => showToast('Inverted switch on')}
+              onToggleOff={() => showToast('Inverted switch off')}
+            />
+          </View>
         </MainContainer>
 
         <Text style={[styles.section, { color: colors.secondary }]}>
@@ -657,6 +689,22 @@ const styles = StyleSheet.create({
   checkItem: {
     marginBottom: 12,
     alignSelf: 'stretch',
+  },
+  switchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+    alignSelf: 'stretch',
+    gap: 12,
+  },
+  switchRowInverted: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    alignSelf: 'stretch',
+    gap: 12,
+    width: '100%',
   },
   listItem: {
     marginBottom: 10,
