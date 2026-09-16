@@ -1,4 +1,20 @@
-import { ColorsProvider, useColors } from 'my-module';
+import {
+  ColorsProvider,
+  MAX_BORDER_RADIUS,
+  MAX_BORDER_WIDTH,
+  MAX_SHADOW_BLUR,
+  MAX_SHADOW_OFFSET,
+  MAX_SHADOW_OPACITY,
+  MAX_SHADOW_SPREAD,
+  MIN_BORDER_RADIUS,
+  MIN_BORDER_WIDTH,
+  MIN_SHADOW_BLUR,
+  MIN_SHADOW_OFFSET,
+  MIN_SHADOW_OPACITY,
+  MIN_SHADOW_SPREAD,
+  useColors,
+} from 'my-module';
+import Slider from '@react-native-community/slider';
 import {
   Platform,
   Pressable,
@@ -54,7 +70,7 @@ function ThemeDemo() {
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={[styles.title, { color: colors.secondary }]}>Theme</Text>
         <Text style={[styles.subtitle, { color: colors.accent }]}>
-          Colors, borders, and shadows — saved on device.
+          Tweak colors, borders, and shadows in real time.
         </Text>
 
         <View style={styles.row}>
@@ -84,162 +100,235 @@ function ThemeDemo() {
         </View>
 
         <Text style={[styles.section, { color: colors.secondary }]}>Colors</Text>
-        <View style={styles.actions}>
-          <Action
-            label="Primary → white"
-            onPress={() => setPrimary('#FFFFFF')}
-            colors={colors}
-            borders={borders}
-          />
-          <Action
-            label="Primary → light gray"
-            onPress={() => setPrimary('#F0F0F0')}
-            colors={colors}
-            borders={borders}
-          />
-          <Action
-            label="Secondary → black"
-            onPress={() => setSecondary('#000000')}
-            colors={colors}
-            borders={borders}
-          />
-          <Action
-            label="Secondary → navy"
-            onPress={() => setSecondary('#001F3F')}
-            colors={colors}
-            borders={borders}
-          />
-          <Action
-            label="Secondary → crimson"
-            onPress={() => setSecondary('#DC143C')}
-            colors={colors}
-            borders={borders}
-          />
-          <Action
-            label="Reset colors"
-            onPress={resetColors}
-            colors={colors}
-            borders={borders}
-          />
-        </View>
+        <ColorPicker
+          label="Primary"
+          value={colors.primary}
+          onChange={setPrimary}
+          ink={colors.secondary}
+          track={colors.accent}
+        />
+        <ColorPicker
+          label="Secondary"
+          value={colors.secondary}
+          onChange={setSecondary}
+          ink={colors.secondary}
+          track={colors.accent}
+        />
+        <ResetButton label="Reset colors" onPress={resetColors} ink={colors.secondary} />
 
         <Text style={[styles.section, { color: colors.secondary }]}>Borders</Text>
-        <View style={styles.actions}>
-          <Action
-            label="Width → 0"
-            onPress={() => setBorderWidth(0)}
-            colors={colors}
-            borders={borders}
-          />
-          <Action
-            label="Width → 2 (default)"
-            onPress={() => setBorderWidth(2)}
-            colors={colors}
-            borders={borders}
-          />
-          <Action
-            label="Width → 3 (max)"
-            onPress={() => setBorderWidth(3)}
-            colors={colors}
-            borders={borders}
-          />
-          <Action
-            label="Radius → 0"
-            onPress={() => setBorderRadius(0)}
-            colors={colors}
-            borders={borders}
-          />
-          <Action
-            label="Radius → 15 (default)"
-            onPress={() => setBorderRadius(15)}
-            colors={colors}
-            borders={borders}
-          />
-          <Action
-            label="Radius → 999 (full)"
-            onPress={() => setBorderRadius(999)}
-            colors={colors}
-            borders={borders}
-          />
-          <Action
-            label="Reset borders"
-            onPress={resetBorders}
-            colors={colors}
-            borders={borders}
-          />
-        </View>
+        <ThemeSlider
+          label="Border width"
+          value={borders.borderWidth}
+          minimumValue={MIN_BORDER_WIDTH}
+          maximumValue={MAX_BORDER_WIDTH}
+          step={1}
+          onValueChange={setBorderWidth}
+          ink={colors.secondary}
+          track={colors.accent}
+        />
+        <ThemeSlider
+          label="Border radius"
+          value={borders.borderRadius}
+          minimumValue={MIN_BORDER_RADIUS}
+          maximumValue={MAX_BORDER_RADIUS}
+          step={1}
+          onValueChange={setBorderRadius}
+          ink={colors.secondary}
+          track={colors.accent}
+        />
+        <ResetButton label="Reset borders" onPress={resetBorders} ink={colors.secondary} />
 
         <Text style={[styles.section, { color: colors.secondary }]}>Shadows</Text>
-        <View style={styles.actions}>
-          <Action
-            label="Opacity → 40"
-            onPress={() => setShadowOpacity(40)}
-            colors={colors}
-            borders={borders}
-          />
-          <Action
-            label="Opacity → 100 (max)"
-            onPress={() => setShadowOpacity(100)}
-            colors={colors}
-            borders={borders}
-          />
-          <Action
-            label="Blur → 12"
-            onPress={() => setShadowBlur(12)}
-            colors={colors}
-            borders={borders}
-          />
-          <Action
-            label="Blur → 24 (max)"
-            onPress={() => setShadowBlur(24)}
-            colors={colors}
-            borders={borders}
-          />
-          <Action
-            label="Spread → 4"
-            onPress={() => setShadowSpread(4)}
-            colors={colors}
-            borders={borders}
-          />
-          <Action
-            label="Spread → 8 (max)"
-            onPress={() => setShadowSpread(8)}
-            colors={colors}
-            borders={borders}
-          />
-          <Action
-            label="Offset Y → 4"
-            onPress={() => setShadowOffsetY(4)}
-            colors={colors}
-            borders={borders}
-          />
-          <Action
-            label="Offset X → 8"
-            onPress={() => setShadowOffsetX(8)}
-            colors={colors}
-            borders={borders}
-          />
-          <Action
-            label="Soft card preset"
-            onPress={() => {
-              setShadowOpacity(25);
-              setShadowBlur(12);
-              setShadowSpread(0);
-              setShadowOffsetX(0);
-              setShadowOffsetY(4);
-            }}
-            colors={colors}
-            borders={borders}
-          />
-          <Action
-            label="Reset shadows"
-            onPress={resetShadows}
-            colors={colors}
-            borders={borders}
-          />
-        </View>
+        <ThemeSlider
+          label="Opacity"
+          value={shadows.opacity}
+          minimumValue={MIN_SHADOW_OPACITY}
+          maximumValue={MAX_SHADOW_OPACITY}
+          step={1}
+          onValueChange={setShadowOpacity}
+          ink={colors.secondary}
+          track={colors.accent}
+        />
+        <ThemeSlider
+          label="Blur"
+          value={shadows.blur}
+          minimumValue={MIN_SHADOW_BLUR}
+          maximumValue={MAX_SHADOW_BLUR}
+          step={1}
+          onValueChange={setShadowBlur}
+          ink={colors.secondary}
+          track={colors.accent}
+        />
+        <ThemeSlider
+          label="Spread"
+          value={shadows.spread}
+          minimumValue={MIN_SHADOW_SPREAD}
+          maximumValue={MAX_SHADOW_SPREAD}
+          step={1}
+          onValueChange={setShadowSpread}
+          ink={colors.secondary}
+          track={colors.accent}
+        />
+        <ThemeSlider
+          label="Offset X"
+          value={shadows.offsetX}
+          minimumValue={MIN_SHADOW_OFFSET}
+          maximumValue={MAX_SHADOW_OFFSET}
+          step={1}
+          onValueChange={setShadowOffsetX}
+          ink={colors.secondary}
+          track={colors.accent}
+        />
+        <ThemeSlider
+          label="Offset Y"
+          value={shadows.offsetY}
+          minimumValue={MIN_SHADOW_OFFSET}
+          maximumValue={MAX_SHADOW_OFFSET}
+          step={1}
+          onValueChange={setShadowOffsetY}
+          ink={colors.secondary}
+          track={colors.accent}
+        />
+        <ResetButton label="Reset shadows" onPress={resetShadows} ink={colors.secondary} />
       </ScrollView>
     </SafeAreaView>
+  );
+}
+
+function ColorPicker(props: {
+  label: string;
+  value: string;
+  onChange: (color: string) => void;
+  ink: string;
+  track: string;
+}) {
+  const hex = toPickerHex(props.value);
+  const rgb = hexToRgb(hex);
+
+  return (
+    <View style={styles.control}>
+      <View style={styles.controlHeader}>
+        <Text style={[styles.controlLabel, { color: props.ink }]}>{props.label}</Text>
+        <Text style={[styles.controlValue, { color: props.ink }]}>{hex}</Text>
+      </View>
+
+      {Platform.OS === 'web' ? (
+        <WebColorInput value={hex} onChange={props.onChange} />
+      ) : (
+        <>
+          <ThemeSlider
+            label="Red"
+            value={rgb.r}
+            minimumValue={0}
+            maximumValue={255}
+            step={1}
+            onValueChange={(r) =>
+              props.onChange(rgbToHex(r, rgb.g, rgb.b))
+            }
+            ink={props.ink}
+            track={props.track}
+          />
+          <ThemeSlider
+            label="Green"
+            value={rgb.g}
+            minimumValue={0}
+            maximumValue={255}
+            step={1}
+            onValueChange={(g) =>
+              props.onChange(rgbToHex(rgb.r, g, rgb.b))
+            }
+            ink={props.ink}
+            track={props.track}
+          />
+          <ThemeSlider
+            label="Blue"
+            value={rgb.b}
+            minimumValue={0}
+            maximumValue={255}
+            step={1}
+            onValueChange={(b) =>
+              props.onChange(rgbToHex(rgb.r, rgb.g, b))
+            }
+            ink={props.ink}
+            track={props.track}
+          />
+        </>
+      )}
+
+      <View
+        style={[
+          styles.colorPreview,
+          { backgroundColor: hex, borderColor: props.ink },
+        ]}
+      />
+    </View>
+  );
+}
+
+function WebColorInput(props: { value: string; onChange: (color: string) => void }) {
+  if (Platform.OS !== 'web') {
+    return null;
+  }
+
+  return (
+    <input
+      type="color"
+      value={props.value}
+      onChange={(event) => props.onChange(event.target.value.toUpperCase())}
+      style={{
+        width: '100%',
+        height: 44,
+        border: 'none',
+        padding: 0,
+        cursor: 'pointer',
+        backgroundColor: 'transparent',
+      }}
+    />
+  );
+}
+
+function ThemeSlider(props: {
+  label: string;
+  value: number;
+  minimumValue: number;
+  maximumValue: number;
+  step: number;
+  onValueChange: (value: number) => void;
+  ink: string;
+  track: string;
+}) {
+  return (
+    <View style={styles.control}>
+      <View style={styles.controlHeader}>
+        <Text style={[styles.controlLabel, { color: props.ink }]}>{props.label}</Text>
+        <Text style={[styles.controlValue, { color: props.ink }]}>
+          {Math.round(props.value)}
+        </Text>
+      </View>
+      <Slider
+        value={props.value}
+        minimumValue={props.minimumValue}
+        maximumValue={props.maximumValue}
+        step={props.step}
+        onValueChange={props.onValueChange}
+        minimumTrackTintColor={props.ink}
+        maximumTrackTintColor={props.track}
+        thumbTintColor={props.ink}
+      />
+    </View>
+  );
+}
+
+function ResetButton(props: {
+  label: string;
+  onPress: () => void;
+  ink: string;
+}) {
+  return (
+    <Pressable onPress={props.onPress} style={styles.resetButton}>
+      <Text style={[styles.resetText, { color: props.ink }]}>{props.label}</Text>
+    </Pressable>
   );
 }
 
@@ -260,29 +349,60 @@ function Swatch(props: { label: string; color: string; border: string }) {
   );
 }
 
-function Action(props: {
-  label: string;
-  onPress: () => void;
-  colors: { secondary: string; accent: string };
-  borders: { borderWidth: number; borderRadius: number };
-}) {
-  return (
-    <Pressable
-      onPress={props.onPress}
-      style={[
-        styles.button,
-        {
-          backgroundColor: props.colors.accent,
-          borderColor: props.colors.secondary,
-          borderWidth: props.borders.borderWidth,
-          borderRadius: props.borders.borderRadius,
-        },
-      ]}>
-      <Text style={[styles.buttonText, { color: props.colors.secondary }]}>
-        {props.label}
-      </Text>
-    </Pressable>
+function toPickerHex(color: string): string {
+  const rgb = parseColor(color);
+  if (!rgb) {
+    return '#000000';
+  }
+  return rgbToHex(rgb.r, rgb.g, rgb.b);
+}
+
+function parseColor(color: string): { r: number; g: number; b: number } | null {
+  const trimmed = color.trim();
+
+  if (trimmed.startsWith('#')) {
+    return hexToRgb(trimmed);
+  }
+
+  const rgbMatch = trimmed.match(
+    /^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)/i
   );
+  if (rgbMatch) {
+    return {
+      r: Number(rgbMatch[1]),
+      g: Number(rgbMatch[2]),
+      b: Number(rgbMatch[3]),
+    };
+  }
+
+  return null;
+}
+
+function hexToRgb(hex: string): { r: number; g: number; b: number } {
+  const raw = hex.replace('#', '');
+
+  if (raw.length === 3) {
+    return {
+      r: parseInt(raw[0] + raw[0], 16),
+      g: parseInt(raw[1] + raw[1], 16),
+      b: parseInt(raw[2] + raw[2], 16),
+    };
+  }
+
+  return {
+    r: parseInt(raw.slice(0, 2), 16),
+    g: parseInt(raw.slice(2, 4), 16),
+    b: parseInt(raw.slice(4, 6), 16),
+  };
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  const channel = (value: number) =>
+    Math.round(Math.min(255, Math.max(0, value)))
+      .toString(16)
+      .padStart(2, '0');
+
+  return `#${channel(r)}${channel(g)}${channel(b)}`.toUpperCase();
 }
 
 const styles = StyleSheet.create({
@@ -346,15 +466,37 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     marginTop: 8,
   },
-  actions: {
-    gap: 10,
+  control: {
+    marginBottom: 16,
   },
-  button: {
-    paddingVertical: 12,
-    paddingHorizontal: 14,
+  controlHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
   },
-  buttonText: {
+  controlLabel: {
     fontSize: 14,
     fontWeight: '600',
+  },
+  controlValue: {
+    fontSize: 13,
+    fontVariant: ['tabular-nums'],
+  },
+  colorPreview: {
+    height: 28,
+    borderRadius: 6,
+    borderWidth: 1,
+    marginTop: 8,
+  },
+  resetButton: {
+    alignSelf: 'flex-start',
+    paddingVertical: 8,
+    marginBottom: 8,
+  },
+  resetText: {
+    fontSize: 14,
+    fontWeight: '600',
+    textDecorationLine: 'underline',
   },
 });
