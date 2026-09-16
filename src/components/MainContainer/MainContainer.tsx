@@ -27,6 +27,11 @@ export type MainContainerProps = {
    * When true, hides the border (width 0), matching Flutter `overrideBorder`.
    */
   overrideBorder?: boolean;
+  /**
+   * When true, fill with secondary instead of primary.
+   * Border width/color are unchanged.
+   */
+  filled?: boolean;
   /** Inner padding. Defaults to 16. */
   padding?: number;
   /** When set, the container is pressable (card / button). */
@@ -44,6 +49,7 @@ export function MainContainer({
   height,
   radius,
   overrideBorder = false,
+  filled = false,
   padding = DEFAULT_PADDING,
   onPress,
   style,
@@ -55,7 +61,7 @@ export function MainContainer({
 
   const containerStyle: StyleProp<ViewStyle> = [
     {
-      backgroundColor: colors.primary,
+      backgroundColor: filled ? colors.secondary : colors.primary,
       borderRadius,
       borderWidth,
       borderColor: borderWidth === 0 ? 'transparent' : colors.secondary,

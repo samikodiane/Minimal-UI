@@ -97,9 +97,7 @@ function ThemeDemo() {
           </MainText>
         </MainContainer>
 
-        <MainContainer
-          style={[styles.preview, { backgroundColor: colors.secondary }]}
-          overrideBorder>
+        <MainContainer style={styles.preview} filled overrideBorder>
           <MainText variant="primary" inverted>
             Inverted primary
           </MainText>
