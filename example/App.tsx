@@ -3,6 +3,7 @@ import {
   loadMinimalUIFonts,
   MainCheckItem,
   MainContainer,
+  MainSlider,
   MainSwitch,
   MainText,
   MainTextField,
@@ -22,7 +23,6 @@ import {
   THEME_FONTS,
   useColors,
 } from 'my-module';
-import Slider from '@react-native-community/slider';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Platform,
@@ -312,13 +312,14 @@ function ThemeDemo() {
 
         <Text style={[styles.section, { color: colors.secondary }]}>Borders</Text>
         <ThemeSlider
-          label="Border width"
+          label="Border width (no thumb)"
           value={borders.borderWidth}
           minimumValue={MIN_BORDER_WIDTH}
           maximumValue={MAX_BORDER_WIDTH}
           onValueChange={setBorderWidth}
           ink={colors.secondary}
           track={colors.accent}
+          hideThumb
         />
         <ThemeSlider
           label="Border radius"
@@ -329,6 +330,20 @@ function ThemeDemo() {
           ink={colors.secondary}
           track={colors.accent}
         />
+        <MainContainer style={styles.sliderInverted} filled overrideBorder>
+          <MainText variant="secondary" inverted style={styles.sliderInvertedLabel}>
+            Inverted slider
+          </MainText>
+          <MainSlider
+            value={borders.borderRadius}
+            minimumValue={MIN_BORDER_RADIUS}
+            maximumValue={MAX_BORDER_RADIUS}
+            onValueChange={setBorderRadius}
+            inverted
+            trackHeight={10}
+            thumbSize={24}
+          />
+        </MainContainer>
         <ResetButton label="Reset borders" onPress={resetBorders} ink={colors.secondary} />
 
         <Text style={[styles.section, { color: colors.secondary }]}>Shadows</Text>
@@ -480,6 +495,7 @@ function ThemeSlider(props: {
   onValueChange: (value: number) => void;
   ink: string;
   track: string;
+  hideThumb?: boolean;
 }) {
   return (
     <View style={styles.control}>
@@ -489,14 +505,14 @@ function ThemeSlider(props: {
           {formatOneDecimal(props.value)}
         </Text>
       </View>
-      <Slider
+      <MainSlider
         value={props.value}
         minimumValue={props.minimumValue}
         maximumValue={props.maximumValue}
         onValueChange={(next) => props.onValueChange(roundToOneDecimal(next))}
-        minimumTrackTintColor={props.ink}
-        maximumTrackTintColor={props.track}
-        thumbTintColor={props.ink}
+        hideThumb={props.hideThumb}
+        trackHeight={10}
+        thumbSize={24}
       />
     </View>
   );
@@ -689,6 +705,14 @@ const styles = StyleSheet.create({
   checkItem: {
     marginBottom: 12,
     alignSelf: 'stretch',
+  },
+  sliderInverted: {
+    marginBottom: 16,
+    alignSelf: 'stretch',
+  },
+  sliderInvertedLabel: {
+    marginBottom: 4,
+    alignSelf: 'flex-start',
   },
   switchRow: {
     flexDirection: 'row',

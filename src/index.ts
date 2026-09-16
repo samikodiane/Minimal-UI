@@ -42,6 +42,7 @@ export type {
 export {
   MainCheckItem,
   MainContainer,
+  MainSlider,
   MainSwitch,
   MainText,
   MainTextField,
@@ -50,6 +51,7 @@ export {
 export type {
   MainCheckItemProps,
   MainContainerProps,
+  MainSliderProps,
   MainSwitchProps,
   MainTextProps,
   MainTextFieldProps,

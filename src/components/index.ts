@@ -2,6 +2,8 @@ export { MainCheckItem } from './MainCheckItem';
 export type { MainCheckItemProps } from './MainCheckItem';
 export { MainContainer } from './MainContainer';
 export type { MainContainerProps } from './MainContainer';
+export { MainSlider } from './MainSlider';
+export type { MainSliderProps } from './MainSlider';
 export { MainSwitch } from './MainSwitch';
 export type { MainSwitchProps } from './MainSwitch';
 export { MainText } from './MainText';
