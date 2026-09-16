@@ -2,28 +2,37 @@
 const { getDefaultConfig } = require('expo/metro-config');
 const path = require('path');
 
-const config = getDefaultConfig(__dirname);
+const projectRoot = __dirname;
+const workspaceRoot = path.resolve(projectRoot, '..');
+const escape = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-// npm v7+ will install ../node_modules/react and ../node_modules/react-native because of peerDependencies.
-// To prevent the incompatible react-native between ./node_modules/react-native and ../node_modules/react-native,
-// excludes the one from the parent folder when bundling.
+const config = getDefaultConfig(projectRoot);
+
+// Keep the example on its own React Native copy. The parent package also
+// installs react-native for library tooling, and mixing those versions
+// breaks Metro (codegen / VirtualView errors).
 config.resolver.blockList = [
   ...Array.from(config.resolver.blockList ?? []),
-  // On windows the path will resolve with `\`. We need to escape it with `\\` for the RegExp.
-  new RegExp(path.resolve('..', 'node_modules', 'react').replace(/\\/g, '\\\\')),
-  new RegExp(path.resolve('..', 'node_modules', 'react-native').replace(/\\/g, '\\\\')),
+  new RegExp(`^${escape(path.resolve(workspaceRoot, 'node_modules', 'react'))}\\b`),
+  new RegExp(`^${escape(path.resolve(workspaceRoot, 'node_modules', 'react-dom'))}\\b`),
+  new RegExp(`^${escape(path.resolve(workspaceRoot, 'node_modules', 'react-native'))}\\b`),
+  new RegExp(`^${escape(path.resolve(workspaceRoot, 'node_modules', '@react-native'))}\\b`),
 ];
 
 config.resolver.nodeModulesPaths = [
-  path.resolve(__dirname, './node_modules'),
-  path.resolve(__dirname, '../node_modules'),
+  path.resolve(projectRoot, 'node_modules'),
+  path.resolve(workspaceRoot, 'node_modules'),
 ];
 
 config.resolver.extraNodeModules = {
-  'my-module': '..',
+  'my-module': workspaceRoot,
+  react: path.resolve(projectRoot, 'node_modules/react'),
+  'react-dom': path.resolve(projectRoot, 'node_modules/react-dom'),
+  'react-native': path.resolve(projectRoot, 'node_modules/react-native'),
+  'react-native-web': path.resolve(projectRoot, 'node_modules/react-native-web'),
 };
 
-config.watchFolders = [path.resolve(__dirname, '..')];
+config.watchFolders = [workspaceRoot];
 
 config.transformer.getTransformOptions = async () => ({
   transform: {

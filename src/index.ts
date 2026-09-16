@@ -1,4 +1,14 @@
-// Reexport the native module. On web, it will be resolved to MinimalUIModule.web.ts
-// and on native platforms to MinimalUIModule.ts
-export { default } from './MinimalUIModule';
-export * from './MinimalUI.types';
+export {
+  ACCENT_OPACITY,
+  accentFromSecondary,
+  colorWithOpacity,
+  ColorsProvider,
+  DEFAULT_PRIMARY,
+  DEFAULT_SECONDARY,
+  useColors,
+} from './colors';
+export type {
+  ColorsContextValue,
+  ColorsProviderProps,
+  ThemeColors,
+} from './colors';
