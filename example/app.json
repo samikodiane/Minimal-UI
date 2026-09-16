@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "my-module-example",
-    "slug": "my-module-example",
+    "name": "minimal-ui-example",
+    "slug": "minimal-ui-example",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

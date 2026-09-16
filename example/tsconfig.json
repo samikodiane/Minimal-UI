@@ -3,8 +3,8 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "my-module": ["../src/index"],
-      "my-module/*": ["../src/*"]
+      "@samikodiane/minimal-ui": ["../src/index"],
+      "@samikodiane/minimal-ui/*": ["../src/*"]
     }
   }
 }

@@ -22,7 +22,7 @@ import {
   ShadowSidedList,
   THEME_FONTS,
   useColors,
-} from 'my-module';
+} from '@samikodiane/minimal-ui';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Platform,

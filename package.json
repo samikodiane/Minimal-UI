@@ -1,5 +1,5 @@
 {
-  "name": "my-module",
+  "name": "@samikodiane/minimal-ui",
   "version": "0.1.0",
   "description": "Shared Expo UI components for apps",
   "main": "build/index.js",
@@ -20,16 +20,19 @@
   "keywords": [
     "react-native",
     "expo",
-    "my-module",
+    "minimal-ui",
     "MinimalUI"
   ],
-  "repository": "",
-  "bugs": {
-    "url": "/issues"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/samikodiane/Minimal-UI.git"
   },
-  "author": "Samik <--license> ()",
+  "bugs": {
+    "url": "https://github.com/samikodiane/Minimal-UI/issues"
+  },
+  "author": "Samik",
   "license": "MIT",
-  "homepage": "#readme",
+  "homepage": "https://github.com/samikodiane/Minimal-UI#readme",
   "dependencies": {
     "@expo-google-fonts/abel": "^0.4.0",
     "@expo-google-fonts/acme": "^0.4.2",

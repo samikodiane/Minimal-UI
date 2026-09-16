@@ -1,15 +1,15 @@
 {
-  "name": "my-module-example",
+  "name": "minimal-ui-example",
   "version": "1.0.0",
   "main": "index.ts",
   "dependencies": {
     "@expo/metro-runtime": "~57.0.15",
     "@react-native-async-storage/async-storage": "^3.1.1",
     "@react-native-community/slider": "5.2.0",
+    "@samikodiane/minimal-ui": "file:..",
     "expo": "~57.0.23",
     "expo-linear-gradient": "~57.0.2",
     "expo-status-bar": "~57.0.1",
-    "my-module": "file:..",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.3",
