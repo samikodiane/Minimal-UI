@@ -21,7 +21,7 @@ import {
   useColors,
 } from 'my-module';
 import Slider from '@react-native-community/slider';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Platform,
   Pressable,
@@ -74,12 +74,45 @@ function ThemeDemo() {
     resetFont,
   } = useColors();
 
+  const [toast, setToast] = useState<string | null>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const showToast = useCallback((message: string) => {
+    if (toastTimer.current) {
+      clearTimeout(toastTimer.current);
+    }
+    setToast(message);
+    toastTimer.current = setTimeout(() => setToast(null), 2200);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimer.current) {
+        clearTimeout(toastTimer.current);
+      }
+    };
+  }, []);
+
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor: colors.primary }]}>
+      {toast ? (
+        <View
+          pointerEvents="none"
+          style={[
+            styles.toast,
+            {
+              backgroundColor: colors.secondary,
+            },
+          ]}>
+          <Text style={[styles.toastText, { color: colors.primary }]}>{toast}</Text>
+        </View>
+      ) : null}
+
       <ScrollView
         contentContainerStyle={styles.content}
         // Let elevation / iOS shadows paint into the padded area.
-        clipToPadding={false}>
+        clipToPadding={false}
+        keyboardShouldPersistTaps="handled">
         <Text style={[styles.title, { color: colors.secondary }]}>Theme</Text>
         <Text style={[styles.subtitle, { color: colors.accent }]}>
           Tweak colors, borders, and shadows in real time.
@@ -91,16 +124,38 @@ function ThemeDemo() {
           <Swatch label="Accent" color={colors.accent} border={colors.secondary} />
         </View>
 
-        <MainContainer style={styles.preview}>
-          <MainText variant="primary">Primary text (16 · bold)</MainText>
-          <MainText variant="secondary">Secondary text · {font.name}</MainText>
+        <MainContainer
+          style={styles.preview}
+          onPress={() => showToast('Container pressed')}
+          onLongPress={() => showToast('Container long-pressed')}>
+          <MainText
+            variant="primary"
+            onPress={() => showToast('Primary text pressed')}
+            onLongPress={() => showToast('Primary text long-pressed')}>
+            Primary text (16 · bold)
+          </MainText>
+          <MainText
+            variant="secondary"
+            onPress={() => showToast('Secondary text pressed')}
+            onLongPress={() => showToast('Secondary text long-pressed')}>
+            Secondary text · {font.name}
+          </MainText>
           <MainText variant="primary" size={24} stroke>
             Primary 24 · stroke
           </MainText>
         </MainContainer>
 
-        <MainContainer style={styles.preview} filled overrideBorder>
-          <MainText variant="primary" inverted>
+        <MainContainer
+          style={styles.preview}
+          filled
+          overrideBorder
+          onPress={() => showToast('Filled container pressed')}
+          onLongPress={() => showToast('Filled container long-pressed')}>
+          <MainText
+            variant="primary"
+            inverted
+            onPress={() => showToast('Inverted text pressed')}
+            onLongPress={() => showToast('Inverted text long-pressed')}>
             Inverted primary
           </MainText>
           <MainText variant="secondary" inverted>
@@ -117,6 +172,10 @@ function ThemeDemo() {
           hintText="Type here"
           defaultText=""
           style={styles.textField}
+          onChangeText={(text) =>
+            showToast(text ? `Name changed: ${text}` : 'Name cleared')
+          }
+          onSubmit={(text) => showToast(`Name submitted: ${text || '(empty)'}`)}
         />
         <MainContainer style={styles.textField} filled overrideBorder>
           <MainTextField
@@ -124,6 +183,12 @@ function ThemeDemo() {
             labelText="Email"
             hintText="you@example.com"
             inverted
+            onChangeText={(text) =>
+              showToast(text ? `Email changed: ${text}` : 'Email cleared')
+            }
+            onSubmit={(text) =>
+              showToast(`Email submitted: ${text || '(empty)'}`)
+            }
           />
         </MainContainer>
 
@@ -497,6 +562,21 @@ function rgbToHex(r: number, g: number, b: number): string {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
+  },
+  toast: {
+    position: 'absolute',
+    top: 30,
+    left: 16,
+    right: 16,
+    zIndex: 100,
+    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+  },
+  toastText: {
+    fontSize: 13,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   content: {
     padding: 24,

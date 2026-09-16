@@ -34,14 +34,16 @@ export type MainContainerProps = {
   filled?: boolean;
   /** Inner padding. Defaults to 16. */
   padding?: number;
-  /** When set, the container is pressable (card / button). */
+  /** Called when the container is pressed. */
   onPress?: () => void;
+  /** Called when the container is long-pressed. */
+  onLongPress?: () => void;
   style?: StyleProp<ViewStyle>;
 };
 
 /**
  * Themed container that reads colors, borders, and shadows from the theme.
- * Use as a card, surface, or button (with `onPress`).
+ * Use as a card, surface, or button (with `onPress` / `onLongPress`).
  */
 export function MainContainer({
   children,
@@ -52,6 +54,7 @@ export function MainContainer({
   filled = false,
   padding = DEFAULT_PADDING,
   onPress,
+  onLongPress,
   style,
 }: MainContainerProps) {
   const { colors, borders, shadows } = useColors();
@@ -77,9 +80,12 @@ export function MainContainer({
     style,
   ];
 
-  if (onPress) {
+  if (onPress || onLongPress) {
     return (
-      <Pressable onPress={onPress} style={containerStyle}>
+      <Pressable
+        onPress={onPress}
+        onLongPress={onLongPress}
+        style={containerStyle}>
         {children}
       </Pressable>
     );

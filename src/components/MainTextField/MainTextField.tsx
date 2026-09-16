@@ -30,8 +30,10 @@ export type MainTextFieldProps = {
   defaultText?: string;
   /** Controlled value. When set, overrides `defaultText`. */
   value?: string;
-  /** Called when the typed value changes. */
+  /** Called whenever the typed text changes (add or remove characters). */
   onChangeText?: (text: string) => void;
+  /** Called when the keyboard submit / return key is pressed. */
+  onSubmit?: (text: string) => void;
   /**
    * When true, the field cannot be edited.
    * Defaults to false.
@@ -54,6 +56,7 @@ export type MainTextFieldProps = {
   | 'value'
   | 'defaultValue'
   | 'onChangeText'
+  | 'onSubmitEditing'
   | 'placeholder'
   | 'placeholderTextColor'
   | 'style'
@@ -73,6 +76,7 @@ export function MainTextField({
   defaultText = '',
   value: valueProp,
   onChangeText,
+  onSubmit,
   readOnly = false,
   autoFocus = false,
   inverted = false,
@@ -112,6 +116,7 @@ export function MainTextField({
         {...textInputProps}
         value={value}
         onChangeText={handleChangeText}
+        onSubmitEditing={() => onSubmit?.(value)}
         placeholder={hintText}
         placeholderTextColor={labelColor}
         editable={!readOnly}

@@ -29,6 +29,10 @@ export type MainTextProps = {
    * primary → theme primary color; secondary → primary at 60% opacity.
    */
   inverted?: boolean;
+  /** Called when the text is pressed. */
+  onPress?: () => void;
+  /** Called when the text is long-pressed. */
+  onLongPress?: () => void;
   style?: StyleProp<TextStyle>;
 };
 
@@ -44,6 +48,8 @@ export function MainText({
   stroke = false,
   italic = false,
   inverted = false,
+  onPress,
+  onLongPress,
   style,
 }: MainTextProps) {
   const { colors, font } = useColors();
@@ -77,5 +83,12 @@ export function MainText({
     textDecorationLine,
   };
 
-  return <Text style={[variantStyle, style]}>{children}</Text>;
+  return (
+    <Text
+      onPress={onPress}
+      onLongPress={onLongPress}
+      style={[variantStyle, style]}>
+      {children}
+    </Text>
+  );
 }
