@@ -1,72 +1,148 @@
 import { ColorsProvider, useColors } from 'my-module';
-import { Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import {
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 export default function App() {
   return (
     <ColorsProvider>
-      <ColorDemo />
+      <ThemeDemo />
     </ColorsProvider>
   );
 }
 
-function ColorDemo() {
-  const { colors, setPrimary, setSecondary, resetColors } = useColors();
+function ThemeDemo() {
+  const {
+    colors,
+    borders,
+    setPrimary,
+    setSecondary,
+    resetColors,
+    setBorderWidth,
+    setBorderRadius,
+    resetBorders,
+  } = useColors();
 
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor: colors.primary }]}>
-      <Text style={[styles.title, { color: colors.secondary }]}>Colors</Text>
-      <Text style={[styles.subtitle, { color: colors.accent }]}>
-        Primary, secondary, and accent (60% of secondary). Saved on device.
-      </Text>
+      <ScrollView contentContainerStyle={styles.content}>
+        <Text style={[styles.title, { color: colors.secondary }]}>Theme</Text>
+        <Text style={[styles.subtitle, { color: colors.accent }]}>
+          Colors, border width, and radius — saved on device.
+        </Text>
 
-      <View style={styles.row}>
-        <Swatch label="Primary" color={colors.primary} border={colors.secondary} />
-        <Swatch label="Secondary" color={colors.secondary} border={colors.secondary} />
-        <Swatch label="Accent" color={colors.accent} border={colors.secondary} />
-      </View>
+        <View style={styles.row}>
+          <Swatch label="Primary" color={colors.primary} border={colors.secondary} />
+          <Swatch label="Secondary" color={colors.secondary} border={colors.secondary} />
+          <Swatch label="Accent" color={colors.accent} border={colors.secondary} />
+        </View>
 
-      <Text style={[styles.section, { color: colors.secondary }]}>
-        Change at runtime
-      </Text>
+        <View
+          style={[
+            styles.preview,
+            {
+              backgroundColor: colors.primary,
+              borderColor: colors.secondary,
+              borderWidth: borders.borderWidth,
+              borderRadius: borders.borderRadius,
+            },
+          ]}>
+          <Text style={[styles.previewText, { color: colors.secondary }]}>
+            Preview · width {borders.borderWidth} · radius {borders.borderRadius}
+          </Text>
+        </View>
 
-      <View style={styles.actions}>
-        <Action
-          label="Primary → white"
-          onPress={() => setPrimary('#FFFFFF')}
-          secondary={colors.secondary}
-          accent={colors.accent}
-        />
-        <Action
-          label="Primary → light gray"
-          onPress={() => setPrimary('#F0F0F0')}
-          secondary={colors.secondary}
-          accent={colors.accent}
-        />
-        <Action
-          label="Secondary → black"
-          onPress={() => setSecondary('#000000')}
-          secondary={colors.secondary}
-          accent={colors.accent}
-        />
-        <Action
-          label="Secondary → navy"
-          onPress={() => setSecondary('#001F3F')}
-          secondary={colors.secondary}
-          accent={colors.accent}
-        />
-        <Action
-          label="Secondary → crimson"
-          onPress={() => setSecondary('#DC143C')}
-          secondary={colors.secondary}
-          accent={colors.accent}
-        />
-        <Action
-          label="Reset to white / black"
-          onPress={resetColors}
-          secondary={colors.secondary}
-          accent={colors.accent}
-        />
-      </View>
+        <Text style={[styles.section, { color: colors.secondary }]}>Colors</Text>
+        <View style={styles.actions}>
+          <Action
+            label="Primary → white"
+            onPress={() => setPrimary('#FFFFFF')}
+            colors={colors}
+            borders={borders}
+          />
+          <Action
+            label="Primary → light gray"
+            onPress={() => setPrimary('#F0F0F0')}
+            colors={colors}
+            borders={borders}
+          />
+          <Action
+            label="Secondary → black"
+            onPress={() => setSecondary('#000000')}
+            colors={colors}
+            borders={borders}
+          />
+          <Action
+            label="Secondary → navy"
+            onPress={() => setSecondary('#001F3F')}
+            colors={colors}
+            borders={borders}
+          />
+          <Action
+            label="Secondary → crimson"
+            onPress={() => setSecondary('#DC143C')}
+            colors={colors}
+            borders={borders}
+          />
+          <Action
+            label="Reset colors"
+            onPress={resetColors}
+            colors={colors}
+            borders={borders}
+          />
+        </View>
+
+        <Text style={[styles.section, { color: colors.secondary }]}>Borders</Text>
+        <View style={styles.actions}>
+          <Action
+            label="Width → 0"
+            onPress={() => setBorderWidth(0)}
+            colors={colors}
+            borders={borders}
+          />
+          <Action
+            label="Width → 2 (default)"
+            onPress={() => setBorderWidth(2)}
+            colors={colors}
+            borders={borders}
+          />
+          <Action
+            label="Width → 3 (max)"
+            onPress={() => setBorderWidth(3)}
+            colors={colors}
+            borders={borders}
+          />
+          <Action
+            label="Radius → 0"
+            onPress={() => setBorderRadius(0)}
+            colors={colors}
+            borders={borders}
+          />
+          <Action
+            label="Radius → 15 (default)"
+            onPress={() => setBorderRadius(15)}
+            colors={colors}
+            borders={borders}
+          />
+          <Action
+            label="Radius → 999 (full)"
+            onPress={() => setBorderRadius(999)}
+            colors={colors}
+            borders={borders}
+          />
+          <Action
+            label="Reset borders"
+            onPress={resetBorders}
+            colors={colors}
+            borders={borders}
+          />
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -91,14 +167,24 @@ function Swatch(props: { label: string; color: string; border: string }) {
 function Action(props: {
   label: string;
   onPress: () => void;
-  secondary: string;
-  accent: string;
+  colors: { secondary: string; accent: string };
+  borders: { borderWidth: number; borderRadius: number };
 }) {
   return (
     <Pressable
       onPress={props.onPress}
-      style={[styles.button, { backgroundColor: props.accent, borderColor: props.secondary }]}>
-      <Text style={[styles.buttonText, { color: props.secondary }]}>{props.label}</Text>
+      style={[
+        styles.button,
+        {
+          backgroundColor: props.colors.accent,
+          borderColor: props.colors.secondary,
+          borderWidth: props.borders.borderWidth,
+          borderRadius: props.borders.borderRadius,
+        },
+      ]}>
+      <Text style={[styles.buttonText, { color: props.colors.secondary }]}>
+        {props.label}
+      </Text>
     </Pressable>
   );
 }
@@ -106,7 +192,10 @@ function Action(props: {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
+  },
+  content: {
     padding: 20,
+    paddingBottom: 40,
   },
   title: {
     fontSize: 28,
@@ -120,7 +209,7 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     gap: 12,
-    marginBottom: 28,
+    marginBottom: 20,
   },
   swatchWrap: {
     flex: 1,
@@ -139,10 +228,21 @@ const styles = StyleSheet.create({
     fontSize: 10,
     opacity: 0.8,
   },
+  preview: {
+    paddingVertical: 20,
+    paddingHorizontal: 16,
+    marginBottom: 24,
+    alignItems: 'center',
+  },
+  previewText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
   section: {
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 12,
+    marginTop: 8,
   },
   actions: {
     gap: 10,
@@ -150,8 +250,6 @@ const styles = StyleSheet.create({
   button: {
     paddingVertical: 12,
     paddingHorizontal: 14,
-    borderRadius: 8,
-    borderWidth: 1,
   },
   buttonText: {
     fontSize: 14,
