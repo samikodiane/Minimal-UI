@@ -30,8 +30,8 @@
   "bugs": {
     "url": "https://github.com/samikodiane/Minimal-UI/issues"
   },
-  "author": "Samik",
-  "license": "MIT",
+  "author": "Sami Kodiane",
+  "license": "PolyForm-Noncommercial-1.0.0",
   "homepage": "https://github.com/samikodiane/Minimal-UI#readme",
   "dependencies": {
     "@expo-google-fonts/abel": "^0.4.0",

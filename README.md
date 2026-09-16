@@ -681,9 +681,3 @@ Thumb/fill move with `Animated` during the gesture so the knob stays responsive 
 6. **ShadowSidedList:** pass exactly one scrollable child; fades match primary unless `inverted`.
 7. **Shadows:** best fidelity with New Architecture / web `boxShadow`; Android may approximate with elevation when New Arch is off.
 8. **Example app:** lives in `/example` — use it as the reference for wiring actions and inverted surfaces.
-
----
-
-## License
-
-MIT
