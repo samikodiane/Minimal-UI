@@ -15,6 +15,7 @@ import {
   MIN_SHADOW_OFFSET,
   MIN_SHADOW_OPACITY,
   MIN_SHADOW_SPREAD,
+  ShadowSidedList,
   THEME_FONTS,
   useColors,
 } from 'my-module';
@@ -104,6 +105,34 @@ function ThemeDemo() {
           <MainText variant="secondary" inverted>
             Inverted secondary
           </MainText>
+        </MainContainer>
+
+        <Text style={[styles.section, { color: colors.secondary }]}>
+          Shadow sided list
+        </Text>
+        <ShadowSidedList height={180} style={styles.listPreview}>
+          <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}>
+            {Array.from({ length: 12 }, (_, index) => (
+              <MainContainer key={index} style={styles.listItem}>
+                <MainText variant="primary">List item {index + 1}</MainText>
+                <MainText variant="secondary">Scroll to see edge fades</MainText>
+              </MainContainer>
+            ))}
+          </ScrollView>
+        </ShadowSidedList>
+
+        <MainContainer style={styles.listPreview} filled overrideBorder>
+          <ShadowSidedList height={160} inverted>
+            <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={false}>
+              {Array.from({ length: 10 }, (_, index) => (
+                <View key={index} style={styles.listItemInverted}>
+                  <MainText variant="primary" inverted>
+                    Inverted item {index + 1}
+                  </MainText>
+                </View>
+              ))}
+            </ScrollView>
+          </ShadowSidedList>
         </MainContainer>
 
         <Text style={[styles.section, { color: colors.secondary }]}>Font</Text>
@@ -490,6 +519,19 @@ const styles = StyleSheet.create({
     gap: 8,
     // Give Android elevation room so ScrollView does not clip it.
     overflow: 'visible',
+  },
+  listPreview: {
+    marginBottom: 28,
+    alignSelf: 'stretch',
+  },
+  listItem: {
+    marginBottom: 10,
+    alignSelf: 'stretch',
+  },
+  listItemInverted: {
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    marginBottom: 8,
   },
   fontRow: {
     flexDirection: 'row',

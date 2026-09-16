@@ -61,7 +61,8 @@
     "@expo-google-fonts/source-code-pro": "^0.4.1",
     "@expo-google-fonts/ubuntu": "^0.4.1",
     "@react-native-async-storage/async-storage": "^2.2.0",
-    "expo-font": "~57.0.4"
+    "expo-font": "~57.0.4",
+    "expo-linear-gradient": "~57.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",

@@ -39,8 +39,12 @@ export type {
   ThemeShadows,
 } from './colors';
 
-export { MainContainer, MainText } from './components';
-export type { MainContainerProps, MainTextProps } from './components';
+export { MainContainer, MainText, ShadowSidedList } from './components';
+export type {
+  MainContainerProps,
+  MainTextProps,
+  ShadowSidedListProps,
+} from './components';
 
 export {
   DEFAULT_THEME_FONT,
