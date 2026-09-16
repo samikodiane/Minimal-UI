@@ -1,6 +1,8 @@
 import {
   ColorsProvider,
+  loadMinimalUIFonts,
   MainContainer,
+  MainText,
   MAX_BORDER_RADIUS,
   MAX_BORDER_WIDTH,
   MAX_SHADOW_BLUR,
@@ -13,9 +15,11 @@ import {
   MIN_SHADOW_OFFSET,
   MIN_SHADOW_OPACITY,
   MIN_SHADOW_SPREAD,
+  ThemeFont,
   useColors,
 } from 'my-module';
 import Slider from '@react-native-community/slider';
+import { useEffect, useState } from 'react';
 import {
   Platform,
   Pressable,
@@ -27,6 +31,18 @@ import {
 } from 'react-native';
 
 export default function App() {
+  const [fontsReady, setFontsReady] = useState(false);
+
+  useEffect(() => {
+    loadMinimalUIFonts()
+      .then(() => setFontsReady(true))
+      .catch(() => setFontsReady(true));
+  }, []);
+
+  if (!fontsReady) {
+    return null;
+  }
+
   return (
     <ColorsProvider>
       <ThemeDemo />
@@ -39,6 +55,7 @@ function ThemeDemo() {
     colors,
     borders,
     shadows,
+    font,
     setPrimary,
     setSecondary,
     resetColors,
@@ -51,6 +68,8 @@ function ThemeDemo() {
     setShadowOffsetX,
     setShadowOffsetY,
     resetShadows,
+    changeFont,
+    resetFont,
   } = useColors();
 
   return (
@@ -68,14 +87,38 @@ function ThemeDemo() {
         </View>
 
         <MainContainer style={styles.preview}>
-          <Text style={[styles.previewText, { color: colors.secondary }]}>
-            MainContainer · w {borders.borderWidth} · r {borders.borderRadius}
-          </Text>
-          <Text style={[styles.previewMeta, { color: colors.accent }]}>
-            shadow op {shadows.opacity} · blur {shadows.blur} · spread{' '}
-            {shadows.spread} · x {shadows.offsetX} · y {shadows.offsetY}
-          </Text>
+          <MainText variant="primary">Primary text (16 · bold)</MainText>
+          <MainText variant="secondary">Secondary text · {font.name}</MainText>
+          <MainText variant="primary" size={24} stroke>
+            Primary 24 · stroke
+          </MainText>
         </MainContainer>
+
+        <MainContainer
+          style={[styles.preview, { backgroundColor: colors.secondary }]}
+          overrideBorder>
+          <MainText variant="primary" inverted>
+            Inverted primary
+          </MainText>
+          <MainText variant="secondary" inverted>
+            Inverted secondary
+          </MainText>
+        </MainContainer>
+
+        <Text style={[styles.section, { color: colors.secondary }]}>Font</Text>
+        <View style={styles.fontRow}>
+          {Object.values(ThemeFont).map((name) => (
+            <FontChip
+              key={name}
+              label={name}
+              active={font.name === name}
+              onPress={() => changeFont(name)}
+              ink={colors.secondary}
+              accent={colors.accent}
+            />
+          ))}
+        </View>
+        <ResetButton label="Reset font" onPress={resetFont} ink={colors.secondary} />
 
         <Text style={[styles.section, { color: colors.secondary }]}>Colors</Text>
         <ColorPicker
@@ -306,6 +349,28 @@ function ResetButton(props: {
   );
 }
 
+function FontChip(props: {
+  label: string;
+  active: boolean;
+  onPress: () => void;
+  ink: string;
+  accent: string;
+}) {
+  return (
+    <Pressable
+      onPress={props.onPress}
+      style={[
+        styles.fontChip,
+        {
+          borderColor: props.ink,
+          backgroundColor: props.active ? props.accent : 'transparent',
+        },
+      ]}>
+      <Text style={[styles.fontChipText, { color: props.ink }]}>{props.label}</Text>
+    </Pressable>
+  );
+}
+
 function Swatch(props: { label: string; color: string; border: string }) {
   return (
     <View style={styles.swatchWrap}>
@@ -421,15 +486,23 @@ const styles = StyleSheet.create({
   preview: {
     marginBottom: 24,
     alignSelf: 'stretch',
+    gap: 8,
   },
-  previewText: {
-    fontSize: 14,
+  fontRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 8,
+  },
+  fontChip: {
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  fontChipText: {
+    fontSize: 13,
     fontWeight: '600',
-  },
-  previewMeta: {
-    fontSize: 11,
-    marginTop: 6,
-    textAlign: 'center',
   },
   section: {
     fontSize: 16,

@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import { parseThemeFont, type ThemeFont } from '../typography/fontTypes';
 import { clampBorderRadius, clampBorderWidth } from './shapeUtils';
 import {
   clampShadowBlur,
@@ -20,6 +21,7 @@ export type StoredTheme = {
   shadowSpread: number;
   shadowOffsetX: number;
   shadowOffsetY: number;
+  font: ThemeFont;
 };
 
 export async function loadStoredTheme(): Promise<Partial<StoredTheme> | null> {
@@ -58,6 +60,12 @@ export async function loadStoredTheme(): Promise<Partial<StoredTheme> | null> {
     }
     if (typeof parsed.shadowOffsetY === 'number') {
       result.shadowOffsetY = clampShadowOffset(parsed.shadowOffsetY);
+    }
+    if (typeof parsed.font === 'string') {
+      const font = parseThemeFont(parsed.font);
+      if (font) {
+        result.font = font;
+      }
     }
 
     return Object.keys(result).length > 0 ? result : null;

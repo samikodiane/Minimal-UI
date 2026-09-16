@@ -39,5 +39,14 @@ export type {
   ThemeShadows,
 } from './colors';
 
-export { MainContainer } from './components';
-export type { MainContainerProps } from './components';
+export { MainContainer, MainText } from './components';
+export type { MainContainerProps, MainTextProps } from './components';
+
+export {
+  DEFAULT_THEME_FONT,
+  loadMinimalUIFonts,
+  PRIMARY_TEXT_SIZE,
+  SECONDARY_TEXT_SIZE,
+  ThemeFont,
+} from './typography';
+export type { MainTextVariant, ThemeFontState } from './typography';

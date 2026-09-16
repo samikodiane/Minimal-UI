@@ -23,6 +23,13 @@ import {
   DEFAULT_SHADOW_OPACITY,
   DEFAULT_SHADOW_SPREAD,
 } from './shadowUtils';
+import {
+  DEFAULT_THEME_FONT,
+  getFontFamily,
+  parseThemeFont,
+  ThemeFont,
+} from '../typography/fontTypes';
+import type { ThemeFontState } from '../typography/fontTypes';
 import type {
   ColorsContextValue,
   ThemeBorders,
@@ -47,6 +54,8 @@ export type ColorsProviderProps = {
   shadowSpread?: number;
   shadowOffsetX?: number;
   shadowOffsetY?: number;
+  /** Optional initial font when nothing is saved. Defaults to Geist. */
+  font?: ThemeFont;
 };
 
 export function ColorsProvider({
@@ -60,6 +69,7 @@ export function ColorsProvider({
   shadowSpread: initialShadowSpread = DEFAULT_SHADOW_SPREAD,
   shadowOffsetX: initialShadowOffsetX = DEFAULT_SHADOW_OFFSET,
   shadowOffsetY: initialShadowOffsetY = DEFAULT_SHADOW_OFFSET,
+  font: initialFont = DEFAULT_THEME_FONT,
 }: ColorsProviderProps) {
   const [primary, setPrimaryState] = useState(initialPrimary);
   const [secondary, setSecondaryState] = useState(initialSecondary);
@@ -84,6 +94,7 @@ export function ColorsProvider({
   const [shadowOffsetY, setShadowOffsetYState] = useState(
     clampShadowOffset(initialShadowOffsetY)
   );
+  const [activeFont, setActiveFontState] = useState(initialFont);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -121,6 +132,10 @@ export function ColorsProvider({
         if (stored.shadowOffsetY !== undefined) {
           setShadowOffsetYState(stored.shadowOffsetY);
         }
+        const storedFont = parseThemeFont(stored.font);
+        if (storedFont) {
+          setActiveFontState(storedFont);
+        }
       }
       setHydrated(true);
     });
@@ -144,6 +159,7 @@ export function ColorsProvider({
       shadowSpread,
       shadowOffsetX,
       shadowOffsetY,
+      font: activeFont,
     });
   }, [
     primary,
@@ -155,6 +171,7 @@ export function ColorsProvider({
     shadowSpread,
     shadowOffsetX,
     shadowOffsetY,
+    activeFont,
     hydrated,
   ]);
 
@@ -212,6 +229,14 @@ export function ColorsProvider({
     setShadowOffsetYState(DEFAULT_SHADOW_OFFSET);
   };
 
+  const changeFont = (font: ThemeFont) => {
+    setActiveFontState(font);
+  };
+
+  const resetFont = () => {
+    setActiveFontState(DEFAULT_THEME_FONT);
+  };
+
   const colors: ThemeColors = {
     primary,
     secondary,
@@ -232,12 +257,18 @@ export function ColorsProvider({
     color: colorWithOpacity(secondary, shadowOpacity / 100),
   };
 
+  const font: ThemeFontState = {
+    name: activeFont,
+    family: getFontFamily(activeFont),
+  };
+
   return (
     <ColorsContext.Provider
       value={{
         colors,
         borders,
         shadows,
+        font,
         setPrimary,
         setSecondary,
         resetColors,
@@ -250,6 +281,8 @@ export function ColorsProvider({
         setShadowOffsetX,
         setShadowOffsetY,
         resetShadows,
+        changeFont,
+        resetFont,
       }}>
       {children}
     </ColorsContext.Provider>

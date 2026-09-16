@@ -39,5 +39,7 @@ export type {
   ColorsContextValue,
   ThemeBorders,
   ThemeColors,
+  ThemeFont,
+  ThemeFontState,
   ThemeShadows,
 } from './types';

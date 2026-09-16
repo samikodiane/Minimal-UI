@@ -1,3 +1,5 @@
+import type { ThemeFont, ThemeFontState } from '../typography/fontTypes';
+
 export type ThemeColors = {
   primary: string;
   secondary: string;
@@ -25,6 +27,7 @@ export type ColorsContextValue = {
   colors: ThemeColors;
   borders: ThemeBorders;
   shadows: ThemeShadows;
+  font: ThemeFontState;
   setPrimary: (color: string) => void;
   setSecondary: (color: string) => void;
   /** Restore white / black defaults and persist them. */
@@ -40,4 +43,10 @@ export type ColorsContextValue = {
   setShadowOffsetY: (offsetY: number) => void;
   /** Restore all shadow values to 0, then persist. */
   resetShadows: () => void;
+  /** Switch the single active theme font for all text. */
+  changeFont: (font: ThemeFont) => void;
+  /** Restore Geist as the active font. */
+  resetFont: () => void;
 };
+
+export type { ThemeFont, ThemeFontState };
