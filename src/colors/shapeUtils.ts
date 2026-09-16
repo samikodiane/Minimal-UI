@@ -3,7 +3,7 @@ export const MAX_BORDER_WIDTH = 3;
 export const DEFAULT_BORDER_WIDTH = 2;
 
 export const MIN_BORDER_RADIUS = 0;
-export const MAX_BORDER_RADIUS = 999;
+export const MAX_BORDER_RADIUS = 60;
 export const DEFAULT_BORDER_RADIUS = 15;
 
 export function clampBorderWidth(value: number): number {

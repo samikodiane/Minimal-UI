@@ -38,3 +38,6 @@ export type {
   ThemeColors,
   ThemeShadows,
 } from './colors';
+
+export { MainContainer } from './components';
+export type { MainContainerProps } from './components';

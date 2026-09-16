@@ -1,5 +1,6 @@
 import {
   ColorsProvider,
+  MainContainer,
   MAX_BORDER_RADIUS,
   MAX_BORDER_WIDTH,
   MAX_SHADOW_BLUR,
@@ -52,19 +53,6 @@ function ThemeDemo() {
     resetShadows,
   } = useColors();
 
-  const previewShadow =
-    Platform.OS === 'web'
-      ? {
-          boxShadow: `${shadows.offsetX}px ${shadows.offsetY}px ${shadows.blur}px ${shadows.spread}px ${shadows.color}`,
-        }
-      : {
-          shadowColor: colors.secondary,
-          shadowOpacity: shadows.opacity / 100,
-          shadowRadius: shadows.blur,
-          shadowOffset: { width: shadows.offsetX, height: shadows.offsetY },
-          elevation: Math.round(shadows.blur / 2),
-        };
-
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor: colors.primary }]}>
       <ScrollView contentContainerStyle={styles.content}>
@@ -79,25 +67,15 @@ function ThemeDemo() {
           <Swatch label="Accent" color={colors.accent} border={colors.secondary} />
         </View>
 
-        <View
-          style={[
-            styles.preview,
-            {
-              backgroundColor: colors.primary,
-              borderColor: colors.secondary,
-              borderWidth: borders.borderWidth,
-              borderRadius: borders.borderRadius,
-            },
-            previewShadow,
-          ]}>
+        <MainContainer style={styles.preview}>
           <Text style={[styles.previewText, { color: colors.secondary }]}>
-            Preview · w {borders.borderWidth} · r {borders.borderRadius}
+            MainContainer · w {borders.borderWidth} · r {borders.borderRadius}
           </Text>
           <Text style={[styles.previewMeta, { color: colors.accent }]}>
             shadow op {shadows.opacity} · blur {shadows.blur} · spread{' '}
             {shadows.spread} · x {shadows.offsetX} · y {shadows.offsetY}
           </Text>
-        </View>
+        </MainContainer>
 
         <Text style={[styles.section, { color: colors.secondary }]}>Colors</Text>
         <ColorPicker
@@ -122,7 +100,6 @@ function ThemeDemo() {
           value={borders.borderWidth}
           minimumValue={MIN_BORDER_WIDTH}
           maximumValue={MAX_BORDER_WIDTH}
-          step={1}
           onValueChange={setBorderWidth}
           ink={colors.secondary}
           track={colors.accent}
@@ -132,7 +109,6 @@ function ThemeDemo() {
           value={borders.borderRadius}
           minimumValue={MIN_BORDER_RADIUS}
           maximumValue={MAX_BORDER_RADIUS}
-          step={1}
           onValueChange={setBorderRadius}
           ink={colors.secondary}
           track={colors.accent}
@@ -145,7 +121,6 @@ function ThemeDemo() {
           value={shadows.opacity}
           minimumValue={MIN_SHADOW_OPACITY}
           maximumValue={MAX_SHADOW_OPACITY}
-          step={1}
           onValueChange={setShadowOpacity}
           ink={colors.secondary}
           track={colors.accent}
@@ -155,7 +130,6 @@ function ThemeDemo() {
           value={shadows.blur}
           minimumValue={MIN_SHADOW_BLUR}
           maximumValue={MAX_SHADOW_BLUR}
-          step={1}
           onValueChange={setShadowBlur}
           ink={colors.secondary}
           track={colors.accent}
@@ -165,7 +139,6 @@ function ThemeDemo() {
           value={shadows.spread}
           minimumValue={MIN_SHADOW_SPREAD}
           maximumValue={MAX_SHADOW_SPREAD}
-          step={1}
           onValueChange={setShadowSpread}
           ink={colors.secondary}
           track={colors.accent}
@@ -175,7 +148,6 @@ function ThemeDemo() {
           value={shadows.offsetX}
           minimumValue={MIN_SHADOW_OFFSET}
           maximumValue={MAX_SHADOW_OFFSET}
-          step={1}
           onValueChange={setShadowOffsetX}
           ink={colors.secondary}
           track={colors.accent}
@@ -185,7 +157,6 @@ function ThemeDemo() {
           value={shadows.offsetY}
           minimumValue={MIN_SHADOW_OFFSET}
           maximumValue={MAX_SHADOW_OFFSET}
-          step={1}
           onValueChange={setShadowOffsetY}
           ink={colors.secondary}
           track={colors.accent}
@@ -222,7 +193,6 @@ function ColorPicker(props: {
             value={rgb.r}
             minimumValue={0}
             maximumValue={255}
-            step={1}
             onValueChange={(r) =>
               props.onChange(rgbToHex(r, rgb.g, rgb.b))
             }
@@ -234,7 +204,6 @@ function ColorPicker(props: {
             value={rgb.g}
             minimumValue={0}
             maximumValue={255}
-            step={1}
             onValueChange={(g) =>
               props.onChange(rgbToHex(rgb.r, g, rgb.b))
             }
@@ -246,7 +215,6 @@ function ColorPicker(props: {
             value={rgb.b}
             minimumValue={0}
             maximumValue={255}
-            step={1}
             onValueChange={(b) =>
               props.onChange(rgbToHex(rgb.r, rgb.g, b))
             }
@@ -293,7 +261,6 @@ function ThemeSlider(props: {
   value: number;
   minimumValue: number;
   maximumValue: number;
-  step: number;
   onValueChange: (value: number) => void;
   ink: string;
   track: string;
@@ -303,21 +270,28 @@ function ThemeSlider(props: {
       <View style={styles.controlHeader}>
         <Text style={[styles.controlLabel, { color: props.ink }]}>{props.label}</Text>
         <Text style={[styles.controlValue, { color: props.ink }]}>
-          {Math.round(props.value)}
+          {formatOneDecimal(props.value)}
         </Text>
       </View>
       <Slider
         value={props.value}
         minimumValue={props.minimumValue}
         maximumValue={props.maximumValue}
-        step={props.step}
-        onValueChange={props.onValueChange}
+        onValueChange={(next) => props.onValueChange(roundToOneDecimal(next))}
         minimumTrackTintColor={props.ink}
         maximumTrackTintColor={props.track}
         thumbTintColor={props.ink}
       />
     </View>
   );
+}
+
+function roundToOneDecimal(value: number): number {
+  return Math.round(value * 10) / 10;
+}
+
+function formatOneDecimal(value: number): string {
+  return roundToOneDecimal(value).toFixed(1);
 }
 
 function ResetButton(props: {
@@ -445,11 +419,8 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   preview: {
-    paddingVertical: 20,
-    paddingHorizontal: 16,
     marginBottom: 24,
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    alignSelf: 'stretch',
   },
   previewText: {
     fontSize: 14,
