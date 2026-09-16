@@ -1,5 +1,6 @@
 import { ColorsProvider, useColors } from 'my-module';
 import {
+  Platform,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -20,20 +21,40 @@ function ThemeDemo() {
   const {
     colors,
     borders,
+    shadows,
     setPrimary,
     setSecondary,
     resetColors,
     setBorderWidth,
     setBorderRadius,
     resetBorders,
+    setShadowOpacity,
+    setShadowBlur,
+    setShadowSpread,
+    setShadowOffsetX,
+    setShadowOffsetY,
+    resetShadows,
   } = useColors();
+
+  const previewShadow =
+    Platform.OS === 'web'
+      ? {
+          boxShadow: `${shadows.offsetX}px ${shadows.offsetY}px ${shadows.blur}px ${shadows.spread}px ${shadows.color}`,
+        }
+      : {
+          shadowColor: colors.secondary,
+          shadowOpacity: shadows.opacity / 100,
+          shadowRadius: shadows.blur,
+          shadowOffset: { width: shadows.offsetX, height: shadows.offsetY },
+          elevation: Math.round(shadows.blur / 2),
+        };
 
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor: colors.primary }]}>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={[styles.title, { color: colors.secondary }]}>Theme</Text>
         <Text style={[styles.subtitle, { color: colors.accent }]}>
-          Colors, border width, and radius — saved on device.
+          Colors, borders, and shadows — saved on device.
         </Text>
 
         <View style={styles.row}>
@@ -51,9 +72,14 @@ function ThemeDemo() {
               borderWidth: borders.borderWidth,
               borderRadius: borders.borderRadius,
             },
+            previewShadow,
           ]}>
           <Text style={[styles.previewText, { color: colors.secondary }]}>
-            Preview · width {borders.borderWidth} · radius {borders.borderRadius}
+            Preview · w {borders.borderWidth} · r {borders.borderRadius}
+          </Text>
+          <Text style={[styles.previewMeta, { color: colors.accent }]}>
+            shadow op {shadows.opacity} · blur {shadows.blur} · spread{' '}
+            {shadows.spread} · x {shadows.offsetX} · y {shadows.offsetY}
           </Text>
         </View>
 
@@ -138,6 +164,76 @@ function ThemeDemo() {
           <Action
             label="Reset borders"
             onPress={resetBorders}
+            colors={colors}
+            borders={borders}
+          />
+        </View>
+
+        <Text style={[styles.section, { color: colors.secondary }]}>Shadows</Text>
+        <View style={styles.actions}>
+          <Action
+            label="Opacity → 40"
+            onPress={() => setShadowOpacity(40)}
+            colors={colors}
+            borders={borders}
+          />
+          <Action
+            label="Opacity → 100 (max)"
+            onPress={() => setShadowOpacity(100)}
+            colors={colors}
+            borders={borders}
+          />
+          <Action
+            label="Blur → 12"
+            onPress={() => setShadowBlur(12)}
+            colors={colors}
+            borders={borders}
+          />
+          <Action
+            label="Blur → 24 (max)"
+            onPress={() => setShadowBlur(24)}
+            colors={colors}
+            borders={borders}
+          />
+          <Action
+            label="Spread → 4"
+            onPress={() => setShadowSpread(4)}
+            colors={colors}
+            borders={borders}
+          />
+          <Action
+            label="Spread → 8 (max)"
+            onPress={() => setShadowSpread(8)}
+            colors={colors}
+            borders={borders}
+          />
+          <Action
+            label="Offset Y → 4"
+            onPress={() => setShadowOffsetY(4)}
+            colors={colors}
+            borders={borders}
+          />
+          <Action
+            label="Offset X → 8"
+            onPress={() => setShadowOffsetX(8)}
+            colors={colors}
+            borders={borders}
+          />
+          <Action
+            label="Soft card preset"
+            onPress={() => {
+              setShadowOpacity(25);
+              setShadowBlur(12);
+              setShadowSpread(0);
+              setShadowOffsetX(0);
+              setShadowOffsetY(4);
+            }}
+            colors={colors}
+            borders={borders}
+          />
+          <Action
+            label="Reset shadows"
+            onPress={resetShadows}
             colors={colors}
             borders={borders}
           />
@@ -233,10 +329,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 24,
     alignItems: 'center',
+    backgroundColor: '#fff',
   },
   previewText: {
     fontSize: 14,
     fontWeight: '600',
+  },
+  previewMeta: {
+    fontSize: 11,
+    marginTop: 6,
+    textAlign: 'center',
   },
   section: {
     fontSize: 16,

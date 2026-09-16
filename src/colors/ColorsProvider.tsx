@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 
 import {
   accentFromSecondary,
+  colorWithOpacity,
   DEFAULT_PRIMARY,
   DEFAULT_SECONDARY,
 } from './colorUtils';
@@ -12,7 +13,22 @@ import {
   DEFAULT_BORDER_RADIUS,
   DEFAULT_BORDER_WIDTH,
 } from './shapeUtils';
-import type { ColorsContextValue, ThemeBorders, ThemeColors } from './types';
+import {
+  clampShadowBlur,
+  clampShadowOffset,
+  clampShadowOpacity,
+  clampShadowSpread,
+  DEFAULT_SHADOW_BLUR,
+  DEFAULT_SHADOW_OFFSET,
+  DEFAULT_SHADOW_OPACITY,
+  DEFAULT_SHADOW_SPREAD,
+} from './shadowUtils';
+import type {
+  ColorsContextValue,
+  ThemeBorders,
+  ThemeColors,
+  ThemeShadows,
+} from './types';
 
 const ColorsContext = createContext<ColorsContextValue | null>(null);
 
@@ -26,6 +42,11 @@ export type ColorsProviderProps = {
   borderWidth?: number;
   /** Optional initial border radius when nothing is saved. Defaults to 15. */
   borderRadius?: number;
+  shadowOpacity?: number;
+  shadowBlur?: number;
+  shadowSpread?: number;
+  shadowOffsetX?: number;
+  shadowOffsetY?: number;
 };
 
 export function ColorsProvider({
@@ -34,6 +55,11 @@ export function ColorsProvider({
   secondary: initialSecondary = DEFAULT_SECONDARY,
   borderWidth: initialBorderWidth = DEFAULT_BORDER_WIDTH,
   borderRadius: initialBorderRadius = DEFAULT_BORDER_RADIUS,
+  shadowOpacity: initialShadowOpacity = DEFAULT_SHADOW_OPACITY,
+  shadowBlur: initialShadowBlur = DEFAULT_SHADOW_BLUR,
+  shadowSpread: initialShadowSpread = DEFAULT_SHADOW_SPREAD,
+  shadowOffsetX: initialShadowOffsetX = DEFAULT_SHADOW_OFFSET,
+  shadowOffsetY: initialShadowOffsetY = DEFAULT_SHADOW_OFFSET,
 }: ColorsProviderProps) {
   const [primary, setPrimaryState] = useState(initialPrimary);
   const [secondary, setSecondaryState] = useState(initialSecondary);
@@ -42,6 +68,21 @@ export function ColorsProvider({
   );
   const [borderRadius, setBorderRadiusState] = useState(
     clampBorderRadius(initialBorderRadius)
+  );
+  const [shadowOpacity, setShadowOpacityState] = useState(
+    clampShadowOpacity(initialShadowOpacity)
+  );
+  const [shadowBlur, setShadowBlurState] = useState(
+    clampShadowBlur(initialShadowBlur)
+  );
+  const [shadowSpread, setShadowSpreadState] = useState(
+    clampShadowSpread(initialShadowSpread)
+  );
+  const [shadowOffsetX, setShadowOffsetXState] = useState(
+    clampShadowOffset(initialShadowOffsetX)
+  );
+  const [shadowOffsetY, setShadowOffsetYState] = useState(
+    clampShadowOffset(initialShadowOffsetY)
   );
   const [hydrated, setHydrated] = useState(false);
 
@@ -65,6 +106,21 @@ export function ColorsProvider({
         if (stored.borderRadius !== undefined) {
           setBorderRadiusState(stored.borderRadius);
         }
+        if (stored.shadowOpacity !== undefined) {
+          setShadowOpacityState(stored.shadowOpacity);
+        }
+        if (stored.shadowBlur !== undefined) {
+          setShadowBlurState(stored.shadowBlur);
+        }
+        if (stored.shadowSpread !== undefined) {
+          setShadowSpreadState(stored.shadowSpread);
+        }
+        if (stored.shadowOffsetX !== undefined) {
+          setShadowOffsetXState(stored.shadowOffsetX);
+        }
+        if (stored.shadowOffsetY !== undefined) {
+          setShadowOffsetYState(stored.shadowOffsetY);
+        }
       }
       setHydrated(true);
     });
@@ -83,8 +139,24 @@ export function ColorsProvider({
       secondary,
       borderWidth,
       borderRadius,
+      shadowOpacity,
+      shadowBlur,
+      shadowSpread,
+      shadowOffsetX,
+      shadowOffsetY,
     });
-  }, [primary, secondary, borderWidth, borderRadius, hydrated]);
+  }, [
+    primary,
+    secondary,
+    borderWidth,
+    borderRadius,
+    shadowOpacity,
+    shadowBlur,
+    shadowSpread,
+    shadowOffsetX,
+    shadowOffsetY,
+    hydrated,
+  ]);
 
   const setPrimary = (color: string) => {
     setPrimaryState(color);
@@ -112,6 +184,34 @@ export function ColorsProvider({
     setBorderRadiusState(DEFAULT_BORDER_RADIUS);
   };
 
+  const setShadowOpacity = (opacity: number) => {
+    setShadowOpacityState(clampShadowOpacity(opacity));
+  };
+
+  const setShadowBlur = (blur: number) => {
+    setShadowBlurState(clampShadowBlur(blur));
+  };
+
+  const setShadowSpread = (spread: number) => {
+    setShadowSpreadState(clampShadowSpread(spread));
+  };
+
+  const setShadowOffsetX = (offsetX: number) => {
+    setShadowOffsetXState(clampShadowOffset(offsetX));
+  };
+
+  const setShadowOffsetY = (offsetY: number) => {
+    setShadowOffsetYState(clampShadowOffset(offsetY));
+  };
+
+  const resetShadows = () => {
+    setShadowOpacityState(DEFAULT_SHADOW_OPACITY);
+    setShadowBlurState(DEFAULT_SHADOW_BLUR);
+    setShadowSpreadState(DEFAULT_SHADOW_SPREAD);
+    setShadowOffsetXState(DEFAULT_SHADOW_OFFSET);
+    setShadowOffsetYState(DEFAULT_SHADOW_OFFSET);
+  };
+
   const colors: ThemeColors = {
     primary,
     secondary,
@@ -123,17 +223,33 @@ export function ColorsProvider({
     borderRadius,
   };
 
+  const shadows: ThemeShadows = {
+    opacity: shadowOpacity,
+    blur: shadowBlur,
+    spread: shadowSpread,
+    offsetX: shadowOffsetX,
+    offsetY: shadowOffsetY,
+    color: colorWithOpacity(secondary, shadowOpacity / 100),
+  };
+
   return (
     <ColorsContext.Provider
       value={{
         colors,
         borders,
+        shadows,
         setPrimary,
         setSecondary,
         resetColors,
         setBorderWidth,
         setBorderRadius,
         resetBorders,
+        setShadowOpacity,
+        setShadowBlur,
+        setShadowSpread,
+        setShadowOffsetX,
+        setShadowOffsetY,
+        resetShadows,
       }}>
       {children}
     </ColorsContext.Provider>
@@ -141,8 +257,9 @@ export function ColorsProvider({
 }
 
 /**
- * Theme colors + borders. Accent follows secondary (60% opacity).
- * Primary, secondary, borderWidth, and borderRadius are persisted on device.
+ * Theme colors, borders, and shadows.
+ * Shadow color is always secondary at the current shadow opacity.
+ * Values are persisted on device.
  */
 export function useColors(): ColorsContextValue {
   const context = useContext(ColorsContext);
