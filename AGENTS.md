@@ -40,6 +40,21 @@ import {
 
 Required host-resolvable deps (also listed on the package): `expo-font`, `expo-linear-gradient`, `@react-native-async-storage/async-storage`. Peers: `expo`, `react`, `react-native`.
 
+**Icons (`MainIcon`):** `@expo/vector-icons` (or any other icon library) is **not** bundled with `@samikodiane/minimal-ui`. Consumer apps must install and import icons themselves, then pass the element into `MainIcon`:
+
+```bash
+npx expo install @expo/vector-icons
+```
+
+```ts
+import { Ionicons } from '@expo/vector-icons';
+import { MainIcon } from '@samikodiane/minimal-ui';
+
+<MainIcon variant="primary" inverted>
+  <Ionicons name="home" />
+</MainIcon>
+```
+
 ---
 
 ## Non‑negotiable product rules
@@ -99,7 +114,6 @@ Example app wiring (Metro / TS paths) maps `@samikodiane/minimal-ui` → this wo
 - Put new UI under `src/components/<Name>/`, export from `src/components/index.ts` and `src/index.ts`.
 - Read theme only via `useColors()` inside `ColorsProvider`.
 - Prefer existing patterns: `inverted`, themed borders/shadows, primary/secondary/accent roles.
-- `MainIcon`: wrap a host icon element (`children` / `icon`); inject theme color + size. Do not hard-depend on `@expo/vector-icons` in the library.
 - Wire a small demo in `example/App.tsx` when adding interactive controls.
 - Update `README.md` props / actions tables for public API changes.
 - Keep TypeScript props exported (`export type …Props`).
@@ -108,6 +122,7 @@ Example app wiring (Metro / TS paths) maps `@samikodiane/minimal-ui` → this wo
 
 - Fonts are **bundled** offline via `@expo-google-fonts/*` in `loadMinimalUIFonts` — do not switch back to CDN-only loading for theme fonts.
 - `MainContainer` shadows prefer cross-platform `boxShadow` when available; keep Android/iOS fallbacks coherent.
+- `MainIcon`: **does not ship icons.** The host app must install/import an icon library (typically `@expo/vector-icons` via `npx expo install @expo/vector-icons`) and pass a single element as `children` or `icon`. Never add `@expo/vector-icons` as a dependency of this package. Inject themed `color` + `size` with `cloneElement`. Variants: `primary` (default size `PRIMARY_ICON_SIZE` = 24) and `secondary` (`SECONDARY_ICON_SIZE` = 16); optional `size` overrides. Colors — primary: `colors.primary` / inverted `colors.secondary`; secondary: `colors.accent` / inverted primary @ 60%. Full props: README `MainIcon`.
 - `MainSlider`: default `liveUpdate={false}`; use `Animated` for the thumb/track during drag.
 - `MainCheckItem` / `MainSwitch`: `checked` / `active` are **initial** (uncontrolled after mount) unless you intentionally change that contract and document it.
 - `ShadowSidedList`: expect exactly one scrollable child; fades follow primary unless `inverted`.
@@ -121,6 +136,7 @@ Example app wiring (Metro / TS paths) maps `@samikodiane/minimal-ui` → this wo
 - Do not add a second parallel theme system or hard-code colors that ignore `useColors()`.
 - Do not commit secrets, tokens, or force-push.
 - Do not treat `example/` as the publishable package; the library root is.
+- Do not add `@expo/vector-icons` (or another icon pack) as a dependency of `@samikodiane/minimal-ui` — icons stay in the **consumer app**; `MainIcon` only themes whatever element the app passes in.
 
 ---
 

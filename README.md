@@ -428,7 +428,13 @@ Themed text using the active theme font and primary / secondary roles.
 
 ### MainIcon
 
-Themed icon wrapper. You pass the glyph from the host app (e.g. `@expo/vector-icons`); Minimal UI injects theme `color` and `size`.
+Themed icon wrapper. You pass the glyph from the host app; Minimal UI injects theme `color` and `size`.
+
+**Not included in this package:** `@expo/vector-icons` (and any other icon set) must be installed and imported in the **consumer app**. Minimal UI does not depend on or re-export icon fonts.
+
+```bash
+npx expo install @expo/vector-icons
+```
 
 **When to use:** any icon that should follow primary / secondary roles and inverted surfaces.
 
@@ -733,5 +739,6 @@ Thumb/fill move with `Animated` during the gesture so the knob stays responsive 
 4. **MainCheckItem** / **MainSwitch:** `checked` and `active` are **initial** values only (uncontrolled after mount).
 5. **MainSlider:** prefer default `liveUpdate={false}` for smooth dragging; enable live updates only when the parent tree is light.
 6. **ShadowSidedList:** pass exactly one scrollable child; fades match primary unless `inverted`.
-7. **Shadows:** best fidelity with New Architecture / web `boxShadow`; Android may approximate with elevation when New Arch is off.
-8. **Example app:** lives in `/example` — use it as the reference for wiring actions and inverted surfaces.
+7. **MainIcon:** icon packs (e.g. `@expo/vector-icons`) are **not** part of this package — install/import them in the host app and pass the element as children.
+8. **Shadows:** best fidelity with New Architecture / web `boxShadow`; Android may approximate with elevation when New Arch is off.
+9. **Example app:** lives in `/example` — use it as the reference for wiring actions and inverted surfaces.
