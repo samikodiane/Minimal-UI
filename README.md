@@ -19,6 +19,7 @@ Peer dependencies: `expo`, `react`, `react-native`
    - [MainContainer](#maincontainer)
    - [MainText](#maintext)
    - [MainIcon](#mainicon)
+   - [MainToast](#maintoast)
    - [MainTextField](#maintextfield)
    - [ShadowSidedList](#shadowsidedlist)
    - [MainCheckItem](#maincheckitem)
@@ -102,6 +103,7 @@ Also ensure these resolve in the host app (they are dependencies of the library)
 - `expo-font`
 - `expo-linear-gradient`
 - `@react-native-async-storage/async-storage`
+- `react-native-safe-area-context` (used by toasts for notch / home-indicator insets)
 
 ### Local development (this repo’s example)
 
@@ -484,6 +486,113 @@ import { MainIcon } from '@samikodiane/minimal-ui';
 
 ---
 
+### MainToast
+
+In-app UI toast (not a system / push notification). Themed chip with optional icon and secondary line. Use `ToastProvider` + `useToast()` to show from anywhere, or render `MainToast` declaratively.
+
+Positions use **safe-area insets** only for top/bottom (no extra vertical margin). `ToastProvider` includes a `SafeAreaProvider` so this works even if the app root does not.
+
+**Width**
+
+| Platform | Layout |
+|----------|--------|
+| Native (iOS / Android) | Full width with **24px** left and right margins (plus safe-area sides) |
+| Web | Content-sized, not full viewport; modest `minWidth` (~320) so short messages don’t look stubby |
+
+**Setup** (inside `ColorsProvider`):
+
+```tsx
+import {
+  ColorsProvider,
+  ToastProvider,
+  useToast,
+  MainToast,
+  MainText,
+} from '@samikodiane/minimal-ui';
+import { Ionicons } from '@expo/vector-icons';
+import { Pressable } from 'react-native';
+
+export default function App() {
+  return (
+    <ColorsProvider>
+      <ToastProvider>
+        <Screen />
+      </ToastProvider>
+    </ColorsProvider>
+  );
+}
+
+function Screen() {
+  const { showToast, hideToast } = useToast();
+
+  return (
+    <>
+      {/* Imperative */}
+      <Pressable
+        onPress={() =>
+          showToast({
+            message: 'Saved',
+            secondaryText: 'All changes stored',
+            icon: <Ionicons name="checkmark-circle" />,
+            position: 'top-center',
+          })
+        }>
+        <MainText>Show toast</MainText>
+      </Pressable>
+
+      {/* Or declarative */}
+      <MainToast
+        visible={open}
+        message="Hello"
+        position="bottom-center"
+        inverted
+      />
+    </>
+  );
+}
+```
+
+`showToast` also accepts a plain string: `showToast('Hello')`.
+
+#### `MainToast` parameters
+
+| Parameter | Type | Required | Default | Represents / when to use |
+|-----------|------|----------|---------|--------------------------|
+| `message` | `string` | **Yes** | — | Primary line (`MainText` primary) |
+| `secondaryText` | `string` | No | — | Subtitle under message (`MainText` secondary) |
+| `icon` | `ReactNode` | No | — | Host icon element; wrapped in `MainIcon` primary |
+| `position` | `ToastPosition` | No | `'top-center'` | One of seven placements |
+| `inverted` | `boolean` | No | `false` | Light chip + secondary border (see table) |
+| `visible` | `boolean` | No | `true` | When false, renders nothing |
+| `style` | `StyleProp<ViewStyle>` | No | — | Extra chip styles |
+
+**`ToastPosition`:** `'top-left'` \| `'top-center'` \| `'top-right'` \| `'center'` \| `'bottom-left'` \| `'bottom-center'` \| `'bottom-right'`
+
+**Appearance**
+
+| | Default | Inverted |
+|--|---------|----------|
+| Background | secondary | primary |
+| Border | none | theme `borderWidth` + secondary color |
+| Corner radius | theme `borderRadius` | same |
+| Title / subtitle | `MainText` with `inverted` | `MainText` without `inverted` |
+| Icon | `MainIcon` primary (not inverted) | `MainIcon` primary inverted |
+
+#### `useToast()` / `showToast` options
+
+| Name | Type | Default | Meaning |
+|------|------|---------|---------|
+| `message` | `string` | — | Required primary text |
+| `secondaryText` | `string` | — | Optional subtitle |
+| `icon` | `ReactNode` | — | Optional host icon |
+| `position` | `ToastPosition` | `'top-center'` | Placement |
+| `inverted` | `boolean` | `false` | Light / bordered style |
+| `duration` | `number` | `2200` (`DEFAULT_TOAST_DURATION`) | Auto-hide ms; `0` keeps it until `hideToast()` |
+
+Icon packs are **not** included — same rule as `MainIcon`.
+
+---
+
 ### MainTextField
 
 Transparent themed text input: secondary-style label/hint, primary-style typed value, active theme font.
@@ -726,8 +835,11 @@ Thumb/fill move with `Animated` during the gesture so the knob stays responsive 
 | `MIN_*` / `MAX_*` / `DEFAULT_*` | numbers | Theme token bounds and defaults |
 | `PRIMARY_TEXT_SIZE` / `SECONDARY_TEXT_SIZE` | `16` / `14` | Default text sizes |
 | `PRIMARY_ICON_SIZE` / `SECONDARY_ICON_SIZE` | `24` / `16` | Default icon sizes |
+| `DEFAULT_TOAST_DURATION` | `2200` | Default toast auto-hide ms |
+| `DEFAULT_TOAST_POSITION` | `'top-center'` | Default toast placement |
 | `THEME_FONTS` | `ThemeFont[]` | All fonts for pickers |
 | `loadMinimalUIFonts` | `() => Promise<void>` | Load bundled fonts at startup |
+| `ToastProvider` / `useToast` | component / hook | Imperative in-app toasts |
 
 ---
 
@@ -740,5 +852,6 @@ Thumb/fill move with `Animated` during the gesture so the knob stays responsive 
 5. **MainSlider:** prefer default `liveUpdate={false}` for smooth dragging; enable live updates only when the parent tree is light.
 6. **ShadowSidedList:** pass exactly one scrollable child; fades match primary unless `inverted`.
 7. **MainIcon:** icon packs (e.g. `@expo/vector-icons`) are **not** part of this package — install/import them in the host app and pass the element as children.
-8. **Shadows:** best fidelity with New Architecture / web `boxShadow`; Android may approximate with elevation when New Arch is off.
-9. **Example app:** lives in `/example` — use it as the reference for wiring actions and inverted surfaces.
+8. **MainToast:** wrap with `ToastProvider` inside `ColorsProvider`; call `useToast().showToast(...)`. This is UI-only (no notification permissions). Positions respect safe-area insets.
+9. **Shadows:** best fidelity with New Architecture / web `boxShadow`; Android may approximate with elevation when New Arch is off.
+10. **Example app:** lives in `/example` — use it as the reference for wiring actions and inverted surfaces.

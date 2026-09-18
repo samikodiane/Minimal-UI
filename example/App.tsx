@@ -22,10 +22,12 @@ import {
   MIN_SHADOW_SPREAD,
   ShadowSidedList,
   THEME_FONTS,
+  ToastProvider,
   useColors,
+  useToast,
 } from '@samikodiane/minimal-ui';
 import { Ionicons } from '@expo/vector-icons';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Platform,
   Pressable,
@@ -51,7 +53,9 @@ export default function App() {
 
   return (
     <ColorsProvider>
-      <ThemeDemo />
+      <ToastProvider>
+        <ThemeDemo />
+      </ToastProvider>
     </ColorsProvider>
   );
 }
@@ -78,40 +82,10 @@ function ThemeDemo() {
     resetFont,
   } = useColors();
 
-  const [toast, setToast] = useState<string | null>(null);
-  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const showToast = useCallback((message: string) => {
-    if (toastTimer.current) {
-      clearTimeout(toastTimer.current);
-    }
-    setToast(message);
-    toastTimer.current = setTimeout(() => setToast(null), 2200);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (toastTimer.current) {
-        clearTimeout(toastTimer.current);
-      }
-    };
-  }, []);
+  const { showToast } = useToast();
 
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor: colors.primary }]}>
-      {toast ? (
-        <View
-          pointerEvents="none"
-          style={[
-            styles.toast,
-            {
-              backgroundColor: colors.secondary,
-            },
-          ]}>
-          <Text style={[styles.toastText, { color: colors.primary }]}>{toast}</Text>
-        </View>
-      ) : null}
-
       <ScrollView
         contentContainerStyle={styles.content}
         // Let elevation / iOS shadows paint into the padded area.
@@ -200,6 +174,39 @@ function ThemeDemo() {
             Primary · secondary inverted · primary size 32
           </MainText>
         </MainContainer>
+
+        <Text style={[styles.section, { color: colors.secondary }]}>Toast</Text>
+        <View style={styles.iconRow}>
+          <Pressable
+            onPress={() =>
+              showToast({
+                message: 'Saved',
+                secondaryText: 'Your changes are stored',
+                icon: <Ionicons name="checkmark-circle" />,
+                position: 'top-center',
+              })
+            }
+            style={styles.resetButton}>
+            <Text style={[styles.resetText, { color: colors.secondary }]}>
+              Show toast
+            </Text>
+          </Pressable>
+          <Pressable
+            onPress={() =>
+              showToast({
+                message: 'Inverted toast',
+                secondaryText: 'Primary fill + border',
+                icon: <Ionicons name="information-circle" />,
+                position: 'bottom-center',
+                inverted: true,
+              })
+            }
+            style={styles.resetButton}>
+            <Text style={[styles.resetText, { color: colors.secondary }]}>
+              Inverted
+            </Text>
+          </Pressable>
+        </View>
 
         <Text style={[styles.section, { color: colors.secondary }]}>
           Text field
@@ -672,21 +679,6 @@ function rgbToHex(r: number, g: number, b: number): string {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-  },
-  toast: {
-    position: 'absolute',
-    top: 30,
-    left: 16,
-    right: 16,
-    zIndex: 100,
-    borderRadius: 10,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-  },
-  toastText: {
-    fontSize: 13,
-    fontWeight: '600',
-    textAlign: 'center',
   },
   content: {
     padding: 24,

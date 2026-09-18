@@ -11,5 +11,6 @@ Follow the repository guide in [AGENTS.md](AGENTS.md).
 - Edit library code under `src/`; demo in `example/`
 - Theme rules: one font; accent and shadow color are derived — never add public setters for them
 - `MainIcon`: does **not** include icons — consumer apps must `npx expo install @expo/vector-icons` (or another pack) and pass children; never add that pack as a library dependency; primary/secondary + inverted; sizes 24 / 16 unless `size` override
+- `MainToast`: UI-only; wrap `ToastProvider` inside `ColorsProvider`; `useToast().showToast`; seven positions with safe-area insets; inverted = primary fill + secondary border
 - Expo SDK 57 docs: https://docs.expo.dev/versions/v57.0.0/
 - License is PolyForm Noncommercial — do not relicense to MIT

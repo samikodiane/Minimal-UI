@@ -38,7 +38,7 @@ import {
 } from '@samikodiane/minimal-ui';
 ```
 
-Required host-resolvable deps (also listed on the package): `expo-font`, `expo-linear-gradient`, `@react-native-async-storage/async-storage`. Peers: `expo`, `react`, `react-native`.
+Required host-resolvable deps (also listed on the package): `expo-font`, `expo-linear-gradient`, `@react-native-async-storage/async-storage`, `react-native-safe-area-context`. Peers: `expo`, `react`, `react-native`.
 
 **Icons (`MainIcon`):** `@expo/vector-icons` (or any other icon library) is **not** bundled with `@samikodiane/minimal-ui`. Consumer apps must install and import icons themselves, then pass the element into `MainIcon`:
 
@@ -55,6 +55,23 @@ import { MainIcon } from '@samikodiane/minimal-ui';
 </MainIcon>
 ```
 
+**Toasts (`MainToast`):** in-app UI only (no notification permissions). Not a system notification. Wrap `ToastProvider` inside `ColorsProvider`, then:
+
+```ts
+import { ToastProvider, useToast } from '@samikodiane/minimal-ui';
+
+const { showToast, hideToast } = useToast();
+showToast('Saved');
+showToast({
+  message: 'Saved',
+  secondaryText: 'Details here',
+  icon: <Ionicons name="checkmark" />, // host icon pack
+  position: 'top-center', // or top-left/right, center, bottom-left/center/right
+  inverted: false,
+  duration: 2200,
+});
+```
+
 ---
 
 ## Non‑negotiable product rules
@@ -63,8 +80,9 @@ import { MainIcon } from '@samikodiane/minimal-ui';
 2. **Accent is derived** — always secondary @ 60% opacity. Never add a public `setAccent`.
 3. **Shadow color is derived** — secondary at `opacity / 100`. Never expose a free-form shadow color setter.
 4. **Wrap + fonts** — apps must use `ColorsProvider` and call `loadMinimalUIFonts()` before themed text.
-5. **`inverted`** — many components support inverted styling for dark / filled surfaces; keep that convention when adding UI.
-6. **Persistence** — theme is stored via AsyncStorage (`@minimal-ui/colors`). Provider props are **initial defaults** until hydrate; do not “fix” props to overwrite storage every render.
+5. **Toasts** — for imperative toasts, wrap with `ToastProvider` **inside** `ColorsProvider`, then call `useToast().showToast(...)`.
+6. **`inverted`** — many components support inverted styling for dark / filled surfaces; keep that convention when adding UI.
+7. **Persistence** — theme is stored via AsyncStorage (`@minimal-ui/colors`). Provider props are **initial defaults** until hydrate; do not “fix” props to overwrite storage every render.
 
 ---
 
@@ -123,6 +141,7 @@ Example app wiring (Metro / TS paths) maps `@samikodiane/minimal-ui` → this wo
 - Fonts are **bundled** offline via `@expo-google-fonts/*` in `loadMinimalUIFonts` — do not switch back to CDN-only loading for theme fonts.
 - `MainContainer` shadows prefer cross-platform `boxShadow` when available; keep Android/iOS fallbacks coherent.
 - `MainIcon`: **does not ship icons.** The host app must install/import an icon library (typically `@expo/vector-icons` via `npx expo install @expo/vector-icons`) and pass a single element as `children` or `icon`. Never add `@expo/vector-icons` as a dependency of this package. Inject themed `color` + `size` with `cloneElement`. Variants: `primary` (default size `PRIMARY_ICON_SIZE` = 24) and `secondary` (`SECONDARY_ICON_SIZE` = 16); optional `size` overrides. Colors — primary: `colors.primary` / inverted `colors.secondary`; secondary: `colors.accent` / inverted primary @ 60%. Full props: README `MainIcon`.
+- `MainToast` / `ToastProvider` / `useToast`: in-app overlay toast only. Default: secondary fill, no border, `MainText` inverted + `MainIcon` primary (not inverted). Toast `inverted`: primary fill, secondary border (theme width), text not inverted, icon inverted. Positions: `top-left` | `top-center` | `top-right` | `center` | `bottom-left` | `bottom-center` | `bottom-right` (default `top-center`). Vertical offset = **safe-area only**; native width = full width − **24px** sides; web = content width with ~320 minWidth (not full viewport). Optional `secondaryText` and host `icon`. Auto-hide `DEFAULT_TOAST_DURATION` (2200). Full props: README `MainToast`.
 - `MainSlider`: default `liveUpdate={false}`; use `Animated` for the thumb/track during drag.
 - `MainCheckItem` / `MainSwitch`: `checked` / `active` are **initial** (uncontrolled after mount) unless you intentionally change that contract and document it.
 - `ShadowSidedList`: expect exactly one scrollable child; fades follow primary unless `inverted`.
@@ -149,7 +168,9 @@ import {
   loadMinimalUIFonts,
   MainContainer,
   MainText,
+  ToastProvider,
   useColors,
+  useToast,
 } from '@samikodiane/minimal-ui';
 
 export default function App() {
@@ -162,16 +183,23 @@ export default function App() {
   if (!ready) return null;
   return (
     <ColorsProvider>
-      <Screen />
+      <ToastProvider>
+        <Screen />
+      </ToastProvider>
     </ColorsProvider>
   );
 }
 
 function Screen() {
   const { colors } = useColors();
+  const { showToast } = useToast();
   return (
     <MainContainer style={{ backgroundColor: colors.primary }}>
-      <MainText variant="primary">Hello</MainText>
+      <MainText
+        variant="primary"
+        onPress={() => showToast({ message: 'Hello', position: 'top-center' })}>
+        Hello
+      </MainText>
     </MainContainer>
   );
 }
