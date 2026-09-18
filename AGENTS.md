@@ -99,6 +99,7 @@ Example app wiring (Metro / TS paths) maps `@samikodiane/minimal-ui` → this wo
 - Put new UI under `src/components/<Name>/`, export from `src/components/index.ts` and `src/index.ts`.
 - Read theme only via `useColors()` inside `ColorsProvider`.
 - Prefer existing patterns: `inverted`, themed borders/shadows, primary/secondary/accent roles.
+- `MainIcon`: wrap a host icon element (`children` / `icon`); inject theme color + size. Do not hard-depend on `@expo/vector-icons` in the library.
 - Wire a small demo in `example/App.tsx` when adding interactive controls.
 - Update `README.md` props / actions tables for public API changes.
 - Keep TypeScript props exported (`export type …Props`).

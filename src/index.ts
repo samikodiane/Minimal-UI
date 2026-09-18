@@ -42,15 +42,20 @@ export type {
 export {
   MainCheckItem,
   MainContainer,
+  MainIcon,
   MainSlider,
   MainSwitch,
   MainText,
   MainTextField,
+  PRIMARY_ICON_SIZE,
+  SECONDARY_ICON_SIZE,
   ShadowSidedList,
 } from './components';
 export type {
   MainCheckItemProps,
   MainContainerProps,
+  MainIconProps,
+  MainIconVariant,
   MainSliderProps,
   MainSwitchProps,
   MainTextProps,

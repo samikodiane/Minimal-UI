@@ -3,6 +3,7 @@ import {
   loadMinimalUIFonts,
   MainCheckItem,
   MainContainer,
+  MainIcon,
   MainSlider,
   MainSwitch,
   MainText,
@@ -23,6 +24,7 @@ import {
   THEME_FONTS,
   useColors,
 } from '@samikodiane/minimal-ui';
+import { Ionicons } from '@expo/vector-icons';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Platform,
@@ -162,6 +164,40 @@ function ThemeDemo() {
           </MainText>
           <MainText variant="secondary" inverted>
             Inverted secondary
+          </MainText>
+        </MainContainer>
+
+        <Text style={[styles.section, { color: colors.secondary }]}>Icons</Text>
+        <MainContainer style={styles.preview}>
+          <View style={styles.iconRow}>
+            <MainIcon variant="primary" inverted>
+              <Ionicons name="home" />
+            </MainIcon>
+            <MainIcon variant="secondary">
+              <Ionicons name="settings-outline" />
+            </MainIcon>
+            <MainIcon variant="primary" size={32} inverted>
+              <Ionicons name="heart" />
+            </MainIcon>
+          </View>
+          <MainText variant="secondary">
+            Primary inverted · secondary · primary size 32
+          </MainText>
+        </MainContainer>
+        <MainContainer style={styles.preview} filled overrideBorder>
+          <View style={styles.iconRow}>
+            <MainIcon variant="primary">
+              <Ionicons name="home" />
+            </MainIcon>
+            <MainIcon variant="secondary" inverted>
+              <Ionicons name="settings-outline" />
+            </MainIcon>
+            <MainIcon variant="primary" size={32}>
+              <Ionicons name="heart" />
+            </MainIcon>
+          </View>
+          <MainText variant="secondary" inverted>
+            Primary · secondary inverted · primary size 32
           </MainText>
         </MainContainer>
 
@@ -669,6 +705,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 12,
     marginBottom: 20,
+  },
+  iconRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
   },
   swatchWrap: {
     flex: 1,

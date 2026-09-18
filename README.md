@@ -18,6 +18,7 @@ Peer dependencies: `expo`, `react`, `react-native`
 6. [Components](#components)
    - [MainContainer](#maincontainer)
    - [MainText](#maintext)
+   - [MainIcon](#mainicon)
    - [MainTextField](#maintextfield)
    - [ShadowSidedList](#shadowsidedlist)
    - [MainCheckItem](#maincheckitem)
@@ -425,6 +426,58 @@ Themed text using the active theme font and primary / secondary roles.
 
 ---
 
+### MainIcon
+
+Themed icon wrapper. You pass the glyph from the host app (e.g. `@expo/vector-icons`); Minimal UI injects theme `color` and `size`.
+
+**When to use:** any icon that should follow primary / secondary roles and inverted surfaces.
+
+```tsx
+import { Ionicons } from '@expo/vector-icons';
+import { MainIcon } from '@samikodiane/minimal-ui';
+
+<MainIcon variant="primary" inverted>
+  <Ionicons name="home" />
+</MainIcon>
+
+<MainIcon variant="secondary">
+  <Ionicons name="settings-outline" />
+</MainIcon>
+
+<MainIcon variant="primary" size={32} inverted>
+  <Ionicons name="heart" />
+</MainIcon>
+```
+
+#### Parameters
+
+| Parameter | Type | Required | Default | Represents / when to use |
+|-----------|------|----------|---------|--------------------------|
+| `children` | `ReactNode` | No* | — | Icon element (e.g. `<Ionicons name="home" />`) |
+| `icon` | `ReactNode` | No* | — | Same as `children`; wins if both are set |
+| `variant` | `'primary' \| 'secondary'` | No | `'primary'` | Role: primary @ 24px; secondary @ 16px |
+| `size` | `number` | No | `24` or `16` by variant | Override icon size |
+| `inverted` | `boolean` | No | `false` | Flip colors for dark / filled backgrounds |
+| `style` | `StyleProp<ViewStyle>` | No | — | Wrapper style |
+
+\* Pass either `children` or `icon` (a single React element that accepts `color` and `size`).
+
+**Colors**
+
+| Variant | Normal | Inverted |
+|---------|--------|----------|
+| `primary` | primary | secondary |
+| `secondary` | accent | primary @ 60% |
+
+**Sizes**
+
+| Variant | Default size | Constant |
+|---------|--------------|----------|
+| `primary` | `24` | `PRIMARY_ICON_SIZE` |
+| `secondary` | `16` | `SECONDARY_ICON_SIZE` |
+
+---
+
 ### MainTextField
 
 Transparent themed text input: secondary-style label/hint, primary-style typed value, active theme font.
@@ -666,6 +719,7 @@ Thumb/fill move with `Animated` during the gesture so the knob stays responsive 
 | `clampShadowOpacity` / `Blur` / `Spread` / `Offset` | functions | Clamp shadow tokens |
 | `MIN_*` / `MAX_*` / `DEFAULT_*` | numbers | Theme token bounds and defaults |
 | `PRIMARY_TEXT_SIZE` / `SECONDARY_TEXT_SIZE` | `16` / `14` | Default text sizes |
+| `PRIMARY_ICON_SIZE` / `SECONDARY_ICON_SIZE` | `24` / `16` | Default icon sizes |
 | `THEME_FONTS` | `ThemeFont[]` | All fonts for pickers |
 | `loadMinimalUIFonts` | `() => Promise<void>` | Load bundled fonts at startup |
 
